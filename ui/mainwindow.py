@@ -7,6 +7,7 @@ from PyQt4.QtGui import QMainWindow, QTabWidget, QDockWidget, QToolBar, QAction,
 from network.requesthandler import RequestHandler
 from ui.about import dialog
 from ui.rendernode.panel import RenderNodePanel
+from ui.pool.panel import PoolPanel
 
 
 class MainWindow(QMainWindow):
@@ -47,8 +48,11 @@ class MainWindow(QMainWindow):
         self.prefsEditAction.setShortcut('Ctrl+p')
         self.prefsEditAction.setStatusTip('Edit application preferences')
 
-        self.addRenderNodePanelAction = QAction("Rendernode", self)
+        self.addRenderNodePanelAction = QAction("Rendernodes", self)
         self.addRenderNodePanelAction.triggered.connect(self.addRenderNodePanel)
+
+        self.addPoolPanelAction = QAction("Pools", self)
+        self.addPoolPanelAction.triggered.connect(self.addPoolsPanel)
 
         self.aboutAction = QAction('About', self)
         self.aboutAction.triggered.connect(dialog)
@@ -65,6 +69,7 @@ class MainWindow(QMainWindow):
         windowMenu = menubar.addMenu('&Window')
         panelsMenu = windowMenu.addMenu("Panels")
         panelsMenu.addAction(self.addRenderNodePanelAction)
+        panelsMenu.addAction(self.addPoolPanelAction)
         helpMenu = menubar.addMenu('&Help')
         helpMenu.addAction(self.aboutAction)
 
@@ -79,10 +84,18 @@ class MainWindow(QMainWindow):
 
     def addRenderNodePanel(self):
         dock = QDockWidget("Rendernodes", self)
-        dock.setObjectName("rendernode-dock-{0}".format(uuid4().hex))
+        dock.setObjectName("rendernodes-dock-{0}".format(uuid4().hex))
         renderNodePanel = RenderNodePanel(dock)
         self.requestHandler.renderNodesUpdated.connect(renderNodePanel.onDataUpdate)
         dock.setWidget(renderNodePanel)
+        self.addDockWidget(Qt.TopDockWidgetArea, dock)
+
+    def addPoolsPanel(self):
+        dock = QDockWidget("Pools", self)
+        dock.setObjectName("pools-dock-{0}".format(uuid4().hex))
+        poolPanel = PoolPanel(dock)
+        self.requestHandler.poolsUpdated.connect(poolPanel.onDataUpdate)
+        dock.setWidget(poolPanel)
         self.addDockWidget(Qt.TopDockWidgetArea, dock)
 
     def editPreferences(self):

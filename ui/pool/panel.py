@@ -1,0 +1,85 @@
+import logging
+
+from PyQt4.QtGui import QWidget, QVBoxLayout, QHBoxLayout
+
+from ui.action import Action
+from ui.pool.model import PoolTableProxyModel
+from ui.pool.view import PoolTableView
+from ui.searchlineedit import SearchLineEdit
+
+
+class PoolPanel(QWidget):
+
+    def __init__(self, parent):
+        super(PoolPanel, self).__init__(parent)
+        self.log = logging.getLogger(__name__)
+        self.mainLayout = QVBoxLayout(self)
+        self.searchLineEdit = SearchLineEdit(self)
+        searchLayout = QHBoxLayout()
+        searchLayout.addWidget(self.searchLineEdit)
+        self.tableView = PoolTableView(self)
+        self.tableModel = PoolTableProxyModel(self)
+        self.searchLineEdit.setModel(self.tableModel)
+        self.tableView.setModel(self.tableModel)
+        self.mainLayout.addLayout(searchLayout)
+        self.mainLayout.addWidget(self.tableView)
+        self.setupActions()
+
+    def onDataUpdate(self, data):
+        '''
+        This slot is called once there is new data available for this panel.
+        The data is then propagated to the widgets, which decide on how to
+        actually use it.
+        :param data: action list of rendernode data entities
+        :type data: list
+        '''
+        self.tableModel.onDataUpdate(data)
+
+    def onPauseAction(self):
+        '''
+        Slot called once the pause action is triggered
+        '''
+        print "pause clicked"
+
+    def __addAction(self, text, aId):
+        a = Action(text, "Pools", aId, self)
+        self.addAction(a)
+        self.tableView.addAction(a)
+        return a
+
+    def onXTermAction(self):
+        '''
+        Slot called once the XTerm action is triggered.
+        '''
+        pass
+
+    def onVncAction(self):
+        '''
+        Slot called once the Show VNC action is triggered.
+        '''
+        pass
+
+    def setupActions(self):
+        '''
+        Setup all Actions this panel provides.
+        '''
+        a = self.__addAction("Pause/Resume", 100)
+        a.triggered.connect(self.onPauseAction)
+        a = self.__addAction("Restart", 101)
+#         a.triggered.connect(self.onPauseAction)
+        a = self.__addAction("Kill and Pause", 102)
+#         a.triggered.connect(self.onPauseAction)
+        a = self.__addAction("Kill and Restart", 103)
+#         a.triggered.connect(self.onPauseAction)
+        a = self.__addAction("Quarantine", 104)
+#         a.triggered.connect(self.onPauseAction)
+        a = self.__addAction("Unquarantine", 105)
+#         a.triggered.connect(self.onPauseAction)
+        a = self.__addAction("Delete", 106)
+#         a.triggered.connect(self.onPauseAction)
+        a = self.__addAction("Show Log", 107)
+#         a.triggered.connect(self.onPauseAction)
+        a = self.__addAction("Open XTerm", 108)
+        a.triggered.connect(self.onXTermAction)
+        a = self.__addAction("Open VNC", 109)
+        a.triggered.connect(self.onVncAction)

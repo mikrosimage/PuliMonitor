@@ -18,15 +18,21 @@ class RequestHandler(QObject):
     '''
 
     renderNodesUpdated = pyqtSignal(list)
+    poolsUpdated = pyqtSignal(list)
 
     def __init__(self, parent=None):
         super(RequestHandler, self).__init__(parent)
         self.log = logging.getLogger(__name__)
         self.config = Config(self)
-        self.rnUrl = "http://{host}:{port}/rendernodes".format(host=self.config.hostname,
-                                                               port=self.config.port)
+        self.baseUrl = "http://{host}:{port}".format(host=self.config.hostname,
+                                                     port=self.config.port)
+        self.rnUrl = "{baseurl}/rendernodes".format(baseurl=self.baseUrl)
+        self.poolUrl = "{baseurl}/pools".format(baseurl=self.baseUrl)
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.requestAll)
+
+        self.renderNodesVisible = False
+        self.poolsVisible = False
 
     def start(self):
         self.log.debug("started")
@@ -50,12 +56,26 @@ class RequestHandler(QObject):
         else:
             self.log.error("Error querying for all rendernodes.")
 
+    def queryAllPools(self):
+        '''
+        Retrieves all render nodes from the server and publishes the data via the
+        renderNodesUpdated signal.
+        '''
+        self.log.debug("request pools")
+        r = requests.get(self.poolUrl)
+        if r.status_code == 200:
+            jsonData = r.json().get("pools", {}).values()
+            self.poolsUpdated.emit(jsonData)
+        else:
+            self.log.error("Error querying for all pools.")
+
     def requestAll(self):
         '''
         Request all data
         '''
         self.log.debug("request all")
         self.queryAllRenderNodes()
+        self.queryAllPools()
 
 
 def main():
