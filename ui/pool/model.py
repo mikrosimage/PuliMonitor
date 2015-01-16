@@ -21,15 +21,12 @@ STATUS_COLORS = (QColor(Qt.darkGray),
 
 class PoolTableProxyModel(QSortFilterProxyModel):
 
-    def __init__(self, parent=None):
+    def __init__(self, sourceModel, parent=None):
         super(PoolTableProxyModel, self).__init__(parent)
-        self.setSourceModel(PoolTableModel(self))
+        self.setSourceModel(sourceModel)
         self.setFilterKeyColumn(-1)
         self.setFilterCaseSensitivity(Qt.CaseInsensitive)
         self.setDynamicSortFilter(True)
-
-    def onDataUpdate(self, requestData):
-        self.sourceModel().onDataUpdate(requestData)
 
 
 class PoolTableModel(QAbstractTableModel):

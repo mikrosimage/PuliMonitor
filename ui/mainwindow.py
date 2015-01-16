@@ -6,8 +6,10 @@ from PyQt4.QtGui import QMainWindow, QTabWidget, QDockWidget, QToolBar, QAction,
 
 from network.requesthandler import RequestHandler
 from ui.about import dialog
-from ui.rendernode.panel import RenderNodePanel
 from ui.pool.panel import PoolPanel
+from ui.rendernode.model import RenderNodeTableModel
+from ui.rendernode.panel import RenderNodePanel
+from ui.pool.model import PoolTableModel
 
 
 class MainWindow(QMainWindow):
@@ -22,6 +24,10 @@ class MainWindow(QMainWindow):
         self.requestHandler.moveToThread(self.requestThread)
         self.requestThread.started.connect(self.requestHandler.start)
         self.requestThread.finished.connect(self.requestHandler.deleteLater)
+
+        # members for the data models shared between views
+        self.rendernodesModel = None
+        self.poolModel = None
 
         # setup menus and toolbars
         self.initActions()
@@ -83,18 +89,30 @@ class MainWindow(QMainWindow):
         self.addToolBar(self.mainToolbar)
 
     def addRenderNodePanel(self):
+        '''
+        Add a render node panel to the main window. All views on the panels
+        share one data model.
+        '''
         dock = QDockWidget("Rendernodes", self)
         dock.setObjectName("rendernodes-dock-{0}".format(uuid4().hex))
-        renderNodePanel = RenderNodePanel(dock)
-        self.requestHandler.renderNodesUpdated.connect(renderNodePanel.onDataUpdate)
+        if not self.rendernodesModel:
+            self.rendernodesModel = RenderNodeTableModel(self)
+            self.requestHandler.renderNodesUpdated.connect(self.rendernodesModel.onDataUpdate)
+        renderNodePanel = RenderNodePanel(self.rendernodesModel, dock)
         dock.setWidget(renderNodePanel)
         self.addDockWidget(Qt.TopDockWidgetArea, dock)
 
     def addPoolsPanel(self):
+        '''
+        Add a pool panel to the main window All views on the panels
+        share one data model.
+        '''
         dock = QDockWidget("Pools", self)
         dock.setObjectName("pools-dock-{0}".format(uuid4().hex))
-        poolPanel = PoolPanel(dock)
-        self.requestHandler.poolsUpdated.connect(poolPanel.onDataUpdate)
+        if not self.poolModel:
+            self.poolModel = PoolTableModel(self)
+            self.requestHandler.poolsUpdated.connect(self.poolModel.onDataUpdate)
+        poolPanel = PoolPanel(self.poolModel, dock)
         dock.setWidget(poolPanel)
         self.addDockWidget(Qt.TopDockWidgetArea, dock)
 

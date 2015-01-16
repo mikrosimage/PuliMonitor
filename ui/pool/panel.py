@@ -10,7 +10,7 @@ from ui.searchlineedit import SearchLineEdit
 
 class PoolPanel(QWidget):
 
-    def __init__(self, parent):
+    def __init__(self, poolsModel, parent=None):
         super(PoolPanel, self).__init__(parent)
         self.log = logging.getLogger(__name__)
         self.mainLayout = QVBoxLayout(self)
@@ -18,22 +18,12 @@ class PoolPanel(QWidget):
         searchLayout = QHBoxLayout()
         searchLayout.addWidget(self.searchLineEdit)
         self.tableView = PoolTableView(self)
-        self.tableModel = PoolTableProxyModel(self)
+        self.tableModel = PoolTableProxyModel(poolsModel, self)
         self.searchLineEdit.setModel(self.tableModel)
         self.tableView.setModel(self.tableModel)
         self.mainLayout.addLayout(searchLayout)
         self.mainLayout.addWidget(self.tableView)
         self.setupActions()
-
-    def onDataUpdate(self, data):
-        '''
-        This slot is called once there is new data available for this panel.
-        The data is then propagated to the widgets, which decide on how to
-        actually use it.
-        :param data: action list of rendernode data entities
-        :type data: list
-        '''
-        self.tableModel.onDataUpdate(data)
 
     def onPauseAction(self):
         '''

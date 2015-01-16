@@ -15,7 +15,7 @@ from util.user import currentUser
 
 class RenderNodePanel(QWidget):
 
-    def __init__(self, parent):
+    def __init__(self, renderNodesModel, parent=None):
         super(RenderNodePanel, self).__init__(parent)
         self.log = logging.getLogger(__name__)
         self.mainLayout = QVBoxLayout(self)
@@ -23,7 +23,7 @@ class RenderNodePanel(QWidget):
         searchLayout = QHBoxLayout()
         searchLayout.addWidget(self.searchLineEdit)
         self.tableView = RenderNodeTableView(self)
-        self.tableModel = RenderNodeTableProxyModel(self)
+        self.tableModel = RenderNodeTableProxyModel(renderNodesModel, self)
         self.searchLineEdit.setModel(self.tableModel)
         self.tableView.setModel(self.tableModel)
         self.mainLayout.addLayout(searchLayout)
@@ -32,16 +32,6 @@ class RenderNodePanel(QWidget):
         self.mainLayout.addWidget(self.renderNodeDetails)
         self.tableView.selectionModel().selectionChanged.connect(self._selectionChanged)
         self.setupActions()
-
-    def onDataUpdate(self, data):
-        '''
-        This slot is called once there is new data available for this panel.
-        The data is then propagated to the widgets, which decide on how to
-        actually use it.
-        :param data: action list of rendernode data entities
-        :type data: list
-        '''
-        self.tableModel.onDataUpdate(data)
 
     def _selectionChanged(self, selected, deselected):
         '''

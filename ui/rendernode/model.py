@@ -39,15 +39,12 @@ RN_STATUS_COLORS = (QColor(Qt.darkGray),
 
 class RenderNodeTableProxyModel(QSortFilterProxyModel):
 
-    def __init__(self, parent=None):
+    def __init__(self, sourceModel, parent=None):
         super(RenderNodeTableProxyModel, self).__init__(parent)
-        self.setSourceModel(RenderNodeTableModel(self))
+        self.setSourceModel(sourceModel)
         self.setFilterKeyColumn(-1)
         self.setFilterCaseSensitivity(Qt.CaseInsensitive)
         self.setDynamicSortFilter(True)
-
-    def onDataUpdate(self, requestData):
-        self.sourceModel().onDataUpdate(requestData)
 
 
 class RenderNodeTableModel(QAbstractTableModel):

@@ -29,7 +29,6 @@ class Config(QSettings):
 
 
 if __name__ == '__main__':
-    import sys
     app = QApplication([])
     c = Config()
     print c.hostname
