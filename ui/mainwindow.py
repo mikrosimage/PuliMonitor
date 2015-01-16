@@ -1,3 +1,5 @@
+from uuid import uuid4
+
 from PyQt4.QtCore import Qt, QSettings, QByteArray, QThread
 from PyQt4.QtGui import QMainWindow, QTabWidget, QDockWidget, QToolBar, QAction, \
     QStyle, qApp
@@ -27,14 +29,7 @@ class MainWindow(QMainWindow):
 
         # setup docks and rendernode panels
         self.setTabPosition(Qt.TopDockWidgetArea, QTabWidget.North)
-        for num in range(2):
-            dock = QDockWidget("Rendernodes {0}".format(num), self)
-            dock.setObjectName("rendernodes{0}".format(num))
-            renderNodePanel = RenderNodePanel(dock)
-            self.requestHandler.renderNodesUpdated.connect(renderNodePanel.onDataUpdate)
-            dock.setWidget(renderNodePanel)
-            self.addDockWidget(Qt.TopDockWidgetArea, dock)
-
+        self.addRenderNodePanel()
         self.restoreSettings()
 
         # start querying
@@ -52,6 +47,9 @@ class MainWindow(QMainWindow):
         self.prefsEditAction.setShortcut('Ctrl+p')
         self.prefsEditAction.setStatusTip('Edit application preferences')
 
+        self.addRenderNodePanelAction = QAction("Rendernode", self)
+        self.addRenderNodePanelAction.triggered.connect(self.addRenderNodePanel)
+
         self.aboutAction = QAction('About', self)
         self.aboutAction.triggered.connect(dialog)
 
@@ -64,6 +62,9 @@ class MainWindow(QMainWindow):
         fileMenu.addAction(self.refreshAction)
         editMenu = menubar.addMenu('&Edit')
         editMenu.addAction(self.prefsEditAction)
+        windowMenu = menubar.addMenu('&Window')
+        panelsMenu = windowMenu.addMenu("Panels")
+        panelsMenu.addAction(self.addRenderNodePanelAction)
         helpMenu = menubar.addMenu('&Help')
         helpMenu.addAction(self.aboutAction)
 
@@ -75,6 +76,14 @@ class MainWindow(QMainWindow):
         self.mainToolbar.setObjectName("MainToolbar")
         self.mainToolbar.addAction(self.refreshAction)
         self.addToolBar(self.mainToolbar)
+
+    def addRenderNodePanel(self):
+        dock = QDockWidget("Rendernodes", self)
+        dock.setObjectName("rendernode-dock-{0}".format(uuid4().hex))
+        renderNodePanel = RenderNodePanel(dock)
+        self.requestHandler.renderNodesUpdated.connect(renderNodePanel.onDataUpdate)
+        dock.setWidget(renderNodePanel)
+        self.addDockWidget(Qt.TopDockWidgetArea, dock)
 
     def editPreferences(self):
         '''
