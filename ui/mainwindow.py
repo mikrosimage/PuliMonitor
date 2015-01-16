@@ -98,6 +98,9 @@ class MainWindow(QMainWindow):
         '''
         # TODO: implement saving settings here
         # TODO: correctly shutdown request thread here
+        self.requestHandler.stop()
+        self.requestThread.quit()
+        self.requestThread.wait()
         self.saveSettings()
         return QMainWindow.closeEvent(self, *args, **kwargs)
 

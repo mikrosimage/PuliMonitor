@@ -33,6 +33,10 @@ class RequestHandler(QObject):
         self.requestAll()
         self.timer.start(self.config.refreshInterval)
 
+    def stop(self):
+        self.log.debug("stopped")
+        self.timer.stop()
+
     def queryAllRenderNodes(self):
         '''
         Retrieves all render nodes from the server and publishes the data via the
