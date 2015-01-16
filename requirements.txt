@@ -1,0 +1,4 @@
+PyQt4
+sip
+requests
+puli

@@ -1,2 +1,7 @@
 
-*.pyc
+*.log
+*.py[cod]
+.project
+.pydevproject
+__pycache__/
+.settings/
