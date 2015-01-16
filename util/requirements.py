@@ -29,7 +29,7 @@ def fulfilled():
         log.error("Puli octopus library missing")
         res = False
 
-    if res:
+    if not res:
         log.error("Please make sure these libraries are in your PYTHONPATH")
 
     return res
