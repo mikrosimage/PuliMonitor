@@ -22,6 +22,10 @@ class Config(QSettings):
         self.refreshInterval = self.value("refresh_interval", 3, int) * 1000
         self.endGroup()
 
+        self.beginGroup("VNC")
+        self.vncCommand = self.value("vnc_command", "vncviewer {hostname}", str)
+        self.endGroup()
+
 
 if __name__ == '__main__':
     import sys

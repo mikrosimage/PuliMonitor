@@ -1,11 +1,15 @@
+import logging
+import subprocess
+
 from PyQt4.QtCore import Qt
-from PyQt4.QtGui import QWidget, QVBoxLayout, QHBoxLayout
+from PyQt4.QtGui import QWidget, QVBoxLayout, QHBoxLayout, QMessageBox
 
 from ui.action import Action
 from ui.rendernode.details import RenderNodeDetails
 from ui.rendernode.model import RenderNodeTableProxyModel
 from ui.rendernode.view import RenderNodeTableView
 from ui.searchlineedit import SearchLineEdit
+from util.config import Config
 from util.user import currentUser
 
 
@@ -13,6 +17,7 @@ class RenderNodePanel(QWidget):
 
     def __init__(self, parent):
         super(RenderNodePanel, self).__init__(parent)
+        self.log = logging.getLogger(__name__)
         self.mainLayout = QVBoxLayout(self)
         self.searchLineEdit = SearchLineEdit(self)
         searchLayout = QHBoxLayout()
@@ -33,7 +38,7 @@ class RenderNodePanel(QWidget):
         This slot is called once there is new data available for this panel.
         The data is then propagated to the widgets, which decide on how to
         actually use it.
-        :param data: a list of rendernode data entities
+        :param data: action list of rendernode data entities
         :type data: list
         '''
         self.tableModel.onDataUpdate(data)
@@ -57,25 +62,69 @@ class RenderNodePanel(QWidget):
         '''
         print "pause clicked"
 
+    def onXTermAction(self):
+        '''
+        Slot called once the XTerm action is triggered.
+        '''
+        for index in self.tableView.selectionModel().selectedRows():
+            rowData = index.data(Qt.UserRole)
+            hostname = rowData.get("host")
+            cu = currentUser().name
+            self.log.debug("opening xterm for user {0}@{1}".format(cu, hostname))
+            try:
+                subprocess.Popen(["xterm", "-e", "ssh",
+                                  "{0}@{1}".format(cu, hostname)])
+            except:
+                msg = "Could not open xterm."
+                self.log.exception(msg)
+                QMessageBox.critical(None, "Error", msg)
+
+    def onVncAction(self):
+        '''
+        Slot called once the Show VNC action is triggered.
+        '''
+        config = Config()
+        for index in self.tableView.selectionModel().selectedRows():
+            rowData = index.data(Qt.UserRole)
+            hostname = rowData.get("host")
+            vncCommand = config.vncCommand.format(hostname=hostname)
+            self.log.debug("opening vnc with command: {0}".format(vncCommand))
+            try:
+                subprocess.Popen(vncCommand)
+            except:
+                msg = "Could not open VNC with command: {0}".format(vncCommand)
+                self.log.exception(msg)
+                QMessageBox.critical(None, "Error", msg)
+
+    def __addAction(self, text, aId):
+        a = Action(text, "Rendernode", aId, self)
+        self.addAction(a)
+        self.tableView.addAction(a)
+        return a
+
     def setupActions(self):
         '''
         Setup all Actions this panel provides.
         '''
-
-        a = Action("Pause/Resume", self)
-        a.category = "Rendernode"
-        a.id = 1
+        a = self.__addAction("Pause/Resume", 1)
         a.triggered.connect(self.onPauseAction)
-        self.addAction(a)
-        self.tableView.addAction(a)
-        a.setEnabled(a.id in currentUser().allowedActions())
-#         Action("Restart")
-#         Action("Kill and Pause")
-#         Action("Kill and Restart")
-#         Action("Quarantine")
-#         Action("Unquarantine")
-#         Action("Delete")
-#         Action("Show Log")
-#         Action("Open XTerm")
-#         Action("Open VNC")
-#         Action("Remove Pools")
+        a = self.__addAction("Restart", 2)
+#         a.triggered.connect(self.onPauseAction)
+        a = self.__addAction("Kill and Pause", 3)
+#         a.triggered.connect(self.onPauseAction)
+        a = self.__addAction("Kill and Restart", 4)
+#         a.triggered.connect(self.onPauseAction)
+        a = self.__addAction("Quarantine", 5)
+#         a.triggered.connect(self.onPauseAction)
+        a = self.__addAction("Unquarantine", 6)
+#         a.triggered.connect(self.onPauseAction)
+        a = self.__addAction("Delete", 7)
+#         a.triggered.connect(self.onPauseAction)
+        a = self.__addAction("Show Log", 8)
+#         a.triggered.connect(self.onPauseAction)
+        a = self.__addAction("Open XTerm", 9)
+        a.triggered.connect(self.onXTermAction)
+        a = self.__addAction("Open VNC", 10)
+        a.triggered.connect(self.onVncAction)
+        a = self.__addAction("Remove Pools", 11)
+#         a.triggered.connect(self.onPauseAction)

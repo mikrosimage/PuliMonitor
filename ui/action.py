@@ -1,4 +1,5 @@
 from PyQt4.QtGui import QAction
+from util.user import currentUser
 
 
 class Action(QAction):
@@ -7,7 +8,19 @@ class Action(QAction):
     "Jobs" or "Rendernode") and a required user role for this action to
     be accessible.'''
 
-    def __init__(self, *args, **kwargs):
-        super(Action, self).__init__(*args, **kwargs)
-        self.id = None
-        self.category = None
+    def __init__(self, text, category, aId, parent):
+        super(Action, self).__init__(text, parent)
+        '''
+        :param text: text displayed for action
+        :type text: str
+        :param category: category used for grouping an action in the user
+        permission dialog
+        :type category: str
+        :param aId: an ID which uniqualy identifies the action
+        :type aId: int
+        :param parent: parent Qt object
+        :type parent: QObject
+        '''
+        self.id = aId
+        self.category = category
+        self.setEnabled(self.id in currentUser().allowedActions())

@@ -19,6 +19,7 @@ class User(object):
         Returns a list of all Action IDs included in any role the user
         was assigned to.
         '''
+        # TODO: we could cache this with a cached_property decorator
         actions = set()
         for role in self.roles:
             actions.update(role.actions)
@@ -62,4 +63,4 @@ def loginUser(name):
     CURRENT_USER = User(name)
     # This is just a temp hack to assign a role to an user without
     # an actual backend
-    CURRENT_USER.roles.append(Role("Admin", [2]))
+    CURRENT_USER.roles.append(Role("Admin", [9, 10]))
