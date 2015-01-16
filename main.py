@@ -5,11 +5,9 @@ actual application.
 
 import sys
 
+import logging.config
 
-# setup logger
-from util import logger
-logger.setupConsoleLogger()
-logger.setupFileLogger()
+logging.config.fileConfig('logging.conf')
 
 # test requirements
 from util import requirements
