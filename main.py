@@ -5,6 +5,7 @@ actual application.
 
 import sys
 
+
 # setup logger
 from util import logger
 logger.setupConsoleLogger()
@@ -18,6 +19,9 @@ if not requirements.fulfilled():
 # set sip api v2 needs to be done before importing anything Qt related
 from ui.qthelpers import setSipApiVersion
 setSipApiVersion(2)
+
+from util import exceptionhook
+exceptionhook.install()
 
 from PyQt4.QtGui import QApplication, QIcon
 
