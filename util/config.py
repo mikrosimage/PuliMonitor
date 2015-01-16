@@ -1,4 +1,5 @@
 import os
+import sys
 
 from PyQt4.QtCore import QSettings
 from PyQt4.QtGui import QApplication
@@ -10,7 +11,7 @@ class Config(QSettings):
     '''
 
     def __init__(self, parent=None):
-        configFilePath = os.path.join(os.path.dirname(os.path.abspath(__file__)), "settings.ini")
+        configFilePath = os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), "settings.ini")
         QSettings.__init__(self, configFilePath, QSettings.IniFormat, parent)
 
         self.beginGroup("Server")

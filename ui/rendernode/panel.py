@@ -90,7 +90,7 @@ class RenderNodePanel(QWidget):
             vncCommand = config.vncCommand.format(hostname=hostname)
             self.log.debug("opening vnc with command: {0}".format(vncCommand))
             try:
-                subprocess.Popen(vncCommand)
+                subprocess.Popen(vncCommand, shell=True)
             except:
                 msg = "Could not open VNC with command: {0}".format(vncCommand)
                 self.log.exception(msg)
