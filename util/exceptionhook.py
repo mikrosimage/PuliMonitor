@@ -44,4 +44,4 @@ def handleExceptionQt(exceptionType, exceptionValue, exceptionTraceback):
 
 # re-wire original hook
 def install():
-    sys.excepthook = handleException
+    sys.excepthook = handleExceptionQt
