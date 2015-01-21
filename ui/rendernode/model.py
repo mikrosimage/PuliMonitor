@@ -16,8 +16,8 @@ from octopus.core.enums.rendernode import RN_STATUS_NAMES
 #                       "Performance": u'performance',
 #                       "Last Time Available": u'lastAliveTime',
 #                       "Swap Percentage": u'systemSwapPercentage',
-#                       "Free System RAM": u'systemFreeRam',
 #                       "Registration Date": u'registerDate'}
+
 RN_COL_NAMES = ("Image", "ID", "Name", "Host", "Status", "Commands", "Pools",
                 "Cores", "Cores Used", "Free Cores",
                 "RAM", "Free RAM", "RAM Usage")

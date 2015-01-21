@@ -34,6 +34,9 @@ class RequestHandler(QObject):
         self.renderNodesVisible = False
         self.poolsVisible = False
 
+        self.__rnRequestErrorLogged = False
+        self.__poolRequestErrorLogged = False
+
     def start(self):
         self.log.debug("started")
         self.requestAll()
@@ -49,7 +52,14 @@ class RequestHandler(QObject):
         renderNodesUpdated signal.
         '''
         self.log.debug("request render nodes")
-        r = requests.get(self.rnUrl)
+        try:
+            r = requests.get(self.rnUrl)
+            self.__rnRequestErrorLogged = False
+        except:
+            # log a request error only once
+            if not self.__rnRequestErrorLogged:
+                self.log.exception("Query all rendernodes request to server failed.")
+                return
         if r.status_code == 200:
             jsonData = r.json().get("rendernodes")
             self.renderNodesUpdated.emit(jsonData)
@@ -62,7 +72,14 @@ class RequestHandler(QObject):
         renderNodesUpdated signal.
         '''
         self.log.debug("request pools")
-        r = requests.get(self.poolUrl)
+        try:
+            r = requests.get(self.poolUrl)
+            self.__poolRequestErrorLogged = False
+        except:
+            # log a request error only once
+            if not self.__poolRequestErrorLogged:
+                self.log.exception("Query all pools request to server failed.")
+                return
         if r.status_code == 200:
             jsonData = r.json().get("pools", {}).values()
             self.poolsUpdated.emit(jsonData)
