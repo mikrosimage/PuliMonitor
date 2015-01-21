@@ -1,0 +1,456 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Dialog</class>
+ <widget class="QDialog" name="Dialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>785</width>
+    <height>820</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_3">
+   <item>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>Users</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <widget class="QTableWidget" name="tableWidget">
+        <property name="alternatingRowColors">
+         <bool>true</bool>
+        </property>
+        <property name="selectionBehavior">
+         <enum>QAbstractItemView::SelectRows</enum>
+        </property>
+        <property name="showGrid">
+         <bool>false</bool>
+        </property>
+        <attribute name="horizontalHeaderDefaultSectionSize">
+         <number>150</number>
+        </attribute>
+        <attribute name="horizontalHeaderStretchLastSection">
+         <bool>true</bool>
+        </attribute>
+        <attribute name="verticalHeaderVisible">
+         <bool>false</bool>
+        </attribute>
+        <row>
+         <property name="text">
+          <string/>
+         </property>
+        </row>
+        <row>
+         <property name="text">
+          <string/>
+         </property>
+        </row>
+        <row>
+         <property name="text">
+          <string/>
+         </property>
+        </row>
+        <row>
+         <property name="text">
+          <string/>
+         </property>
+        </row>
+        <column>
+         <property name="text">
+          <string>Name</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Password</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Email</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Groups</string>
+         </property>
+        </column>
+        <item row="0" column="0">
+         <property name="text">
+          <string>Obi Wan</string>
+         </property>
+        </item>
+        <item row="0" column="3">
+         <property name="text">
+          <string>Jedi Master</string>
+         </property>
+        </item>
+        <item row="1" column="0">
+         <property name="text">
+          <string>Anakin Skywalker</string>
+         </property>
+        </item>
+        <item row="1" column="3">
+         <property name="text">
+          <string>Padawan</string>
+         </property>
+        </item>
+        <item row="2" column="0">
+         <property name="text">
+          <string>Yoda</string>
+         </property>
+        </item>
+        <item row="2" column="3">
+         <property name="text">
+          <string>Jedi Master</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QPushButton" name="pushButton">
+          <property name="text">
+           <string>+</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButton_2">
+          <property name="text">
+           <string>-</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButton_5">
+          <property name="text">
+           <string>Duplicate</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_3">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_7">
+       <property name="text">
+        <string>add</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_8">
+       <property name="text">
+        <string>remove</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="title">
+      <string>Groups</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <widget class="QTableWidget" name="tableWidget_2">
+        <property name="alternatingRowColors">
+         <bool>true</bool>
+        </property>
+        <property name="selectionBehavior">
+         <enum>QAbstractItemView::SelectRows</enum>
+        </property>
+        <property name="showGrid">
+         <bool>false</bool>
+        </property>
+        <attribute name="horizontalHeaderDefaultSectionSize">
+         <number>150</number>
+        </attribute>
+        <attribute name="horizontalHeaderStretchLastSection">
+         <bool>true</bool>
+        </attribute>
+        <attribute name="verticalHeaderVisible">
+         <bool>false</bool>
+        </attribute>
+        <row>
+         <property name="text">
+          <string/>
+         </property>
+        </row>
+        <row>
+         <property name="text">
+          <string/>
+         </property>
+        </row>
+        <row>
+         <property name="text">
+          <string/>
+         </property>
+        </row>
+        <row>
+         <property name="text">
+          <string/>
+         </property>
+        </row>
+        <column>
+         <property name="text">
+          <string>Name</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Users</string>
+         </property>
+        </column>
+        <item row="0" column="0">
+         <property name="text">
+          <string>Jedi</string>
+         </property>
+        </item>
+        <item row="0" column="1">
+         <property name="text">
+          <string>Obi Wan</string>
+         </property>
+        </item>
+        <item row="1" column="0">
+         <property name="text">
+          <string>Jedi Master</string>
+         </property>
+        </item>
+        <item row="1" column="1">
+         <property name="text">
+          <string>Yoda</string>
+         </property>
+        </item>
+        <item row="2" column="0">
+         <property name="text">
+          <string>Council Member</string>
+         </property>
+        </item>
+        <item row="2" column="1">
+         <property name="text">
+          <string>Yoda</string>
+         </property>
+        </item>
+        <item row="3" column="0">
+         <property name="text">
+          <string>Padawan</string>
+         </property>
+        </item>
+        <item row="3" column="1">
+         <property name="text">
+          <string>Anakin</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QPushButton" name="pushButton_3">
+          <property name="text">
+           <string>+</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButton_4">
+          <property name="text">
+           <string>-</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButton_6">
+          <property name="text">
+           <string>Duplicate</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_4">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QTreeWidget" name="treeWidget">
+     <column>
+      <property name="text">
+       <string>Group Rights</string>
+      </property>
+     </column>
+     <item>
+      <property name="text">
+       <string>Rendernodes</string>
+      </property>
+      <property name="flags">
+       <set>ItemIsSelectable|ItemIsEditable|ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+      </property>
+      <item>
+       <property name="text">
+        <string>Open Rendernode Panel</string>
+       </property>
+       <property name="checkState">
+        <enum>PartiallyChecked</enum>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Pause Rendernode</string>
+       </property>
+       <property name="checkState">
+        <enum>Checked</enum>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Open VNC</string>
+       </property>
+       <property name="checkState">
+        <enum>Checked</enum>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Open XTerm</string>
+       </property>
+       <property name="checkState">
+        <enum>Checked</enum>
+       </property>
+      </item>
+     </item>
+     <item>
+      <property name="text">
+       <string>Jobs</string>
+      </property>
+      <item>
+       <property name="text">
+        <string>Open Jobs Panel</string>
+       </property>
+       <property name="checkState">
+        <enum>PartiallyChecked</enum>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Restart</string>
+       </property>
+       <property name="checkState">
+        <enum>Checked</enum>
+       </property>
+      </item>
+     </item>
+    </widget>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>Dialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>248</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>Dialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>316</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
