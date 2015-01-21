@@ -21,7 +21,7 @@ setSipApiVersion(2)
 from util import exceptionhook
 exceptionhook.install()
 
-from PyQt4.QtGui import QApplication, QIcon
+from PyQt4.QtGui import QApplication, QIcon, QMessageBox
 
 from ui.about import APP_NAME
 from ui.palette import standardPalette
@@ -41,9 +41,18 @@ app.setApplicationName(APP_NAME)
 app.setOrganizationName("OpenRenderManagement")
 app.setOrganizationDomain("opensource.mikrosimage.eu")
 
+# Test connectivity and dont start if server is not reachable
+from network.utils import testConnectivity
+if not testConnectivity():
+    QMessageBox.critical(None, "Error", "Connecting to the server defined in "
+                         "settings.ini failed!")
+    app.exit(1)
+    sys.exit(1)
+
 # prompt for login
 login = LoginDialog()
 if not login.exec_():
+    app.exit(1)
     sys.exit(1)
 mainwindow = MainWindow()
 mainwindow.show()
