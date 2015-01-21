@@ -13,6 +13,10 @@ class RenderNodeHeaderView(HeaderView):
     functionality from HeaderView.
     '''
 
+    def __init__(self, orientation, parent=None):
+        super(RenderNodeHeaderView, self).__init__(orientation, parent)
+        self.setClickable(True)
+
     def sectionSizes(self):
         return RN_COL_INIT_WIDTH
 

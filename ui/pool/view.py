@@ -12,6 +12,10 @@ class PoolHeaderView(HeaderView):
     functionality from HeaderView.
     '''
 
+    def __init__(self, orientation, parent=None):
+        super(PoolHeaderView, self).__init__(orientation, parent)
+        self.setClickable(True)
+
     def sectionSizes(self):
         return COL_INIT_WIDTH
 
