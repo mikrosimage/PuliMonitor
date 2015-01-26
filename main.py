@@ -2,21 +2,23 @@
 Main module setting up logging, required dependencies, api versions and the
 actual application.
 '''
+import logging.config
+# setup logging first
+from util.path import LOG_CONFIG_PATH
+logging.config.fileConfig(LOG_CONFIG_PATH)
+
+# setting the sip api to v2 needs to be done before importing anything Qt related
+# things, so we put it first
+from ui.qthelpers import setSipApiVersion
+setSipApiVersion(2)
 
 import sys
-
-import logging.config
-
-logging.config.fileConfig('logging.conf')
 
 # test requirements
 from util import requirements
 if not requirements.fulfilled():
     sys.exit(1)
 
-# set sip api v2 needs to be done before importing anything Qt related
-from ui.qthelpers import setSipApiVersion
-setSipApiVersion(2)
 
 from util import exceptionhook
 exceptionhook.install()

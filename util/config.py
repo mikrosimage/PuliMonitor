@@ -1,8 +1,6 @@
-import os
-import sys
-
 from PyQt4.QtCore import QSettings
-from PyQt4.QtGui import QApplication
+
+from util.path import GENERAL_CONFIG_PATH
 
 
 class Config(QSettings):
@@ -11,8 +9,7 @@ class Config(QSettings):
     '''
 
     def __init__(self, parent=None):
-        configFilePath = os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), "settings.ini")
-        QSettings.__init__(self, configFilePath, QSettings.IniFormat, parent)
+        QSettings.__init__(self, GENERAL_CONFIG_PATH, QSettings.IniFormat, parent)
 
         self.beginGroup("Server")
         self.hostname = self.value("hostname", "localhost", str)
@@ -29,6 +26,8 @@ class Config(QSettings):
 
 
 if __name__ == '__main__':
+    import sys
+    from PyQt4.QtGui import QApplication
     app = QApplication([])
     c = Config()
     print c.hostname
