@@ -2,7 +2,7 @@
 from PyQt4.QtCore import QAbstractTableModel, Qt, QModelIndex
 from PyQt4.QtGui import QColor, QSortFilterProxyModel, QStyle, qApp
 
-from octopus.core.enums.rendernode import RN_STATUS_NAMES
+from octopus.core.enums.rendernode import RN_STATUS_NAMES, RN_UNKNOWN
 
 
 # TODO: add these columns
@@ -83,6 +83,10 @@ class RenderNodeTableModel(QAbstractTableModel):
             if role == Qt.DisplayRole:
                 if columnName == "Status":
                     return RN_STATUS_NAMES[data]
+                if columnName == "RAM":
+                    return "{0} MB".format(data)
+                if columnName == "Free RAM":
+                    return "{0} MB".format(data)
                 elif columnName == "RAM Usage":
                     total = float(rowData["systemFreeRam"])
                     return (rowData["ramSize"] - total) / total * 100.0
@@ -95,12 +99,17 @@ class RenderNodeTableModel(QAbstractTableModel):
             return rowData
         if role == Qt.DecorationRole:
             if columnName == "Image":
-                # TODO: user deactivated style once the host status is down
                 return qApp.style().standardIcon(QStyle.SP_ComputerIcon)
 
         return None
 
     def flags(self, index):
+        columnName = RN_COL_NAMES[index.column()]
+        rowData = self.rows[index.row()]
+        if columnName == "Image":
+            status = rowData.get("status")
+            if status == RN_UNKNOWN:
+                return Qt.ItemIsSelectable
         return Qt.ItemIsEnabled | Qt.ItemIsSelectable
 
     def headerData(self, section, orientation, role=Qt.DisplayRole):
