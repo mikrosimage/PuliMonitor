@@ -16,7 +16,7 @@ def getRequestHandler():
     global requestThread
     if not requestHandler:
         requestThread = QThread(qApp)
-        requestHandler = RequestHandler(qApp)
+        requestHandler = RequestHandler()
         requestHandler.moveToThread(requestThread)
         requestThread.started.connect(requestHandler.start)
         requestThread.finished.connect(requestHandler.deleteLater)

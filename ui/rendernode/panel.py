@@ -1,3 +1,4 @@
+import json
 import logging
 import subprocess
 
@@ -5,6 +6,7 @@ from PyQt4.QtCore import Qt
 from PyQt4.QtGui import QWidget, QVBoxLayout, QHBoxLayout, QMessageBox, qApp
 import requests
 
+from network.requesthandler import getRequestHandler
 from ui.action import Action
 from ui.rendernode.details import RenderNodeDetails
 from ui.rendernode.model import RenderNodeTableProxyModel, RenderNodeTableModel
@@ -55,20 +57,25 @@ class RenderNodePanel(QWidget):
         '''
         Slot called once the pause action is triggered
         '''
-        self.log.debug("request pause render node")
-        try:
-            r = requests.put(self.rnUrl)
-            self.__requestErrorLogged = False
-        except:
-            # log a request error only once
-            if not self.__requestErrorLogged:
-                self.log.exception("Query all rendernodes request to server failed.")
-                return
-        if r.status_code == 200:
-            jsonData = r.json().get("rendernodes")
-            self.renderNodesUpdated.emit(jsonData)
-        else:
-            self.log.error("Error querying for all rendernodes.")
+        rh = getRequestHandler()
+        for index in self.tableView.selectionModel().selectedRows():
+            rowData = index.data(Qt.UserRole)
+            name = rowData.get("name")
+            self.log.info("pausing " + name)
+            r = requests.put(rh.baseUrl + "/rendernodes/{name}/paused/".format(name=name),
+                             data=json.dumps({"paused": True, "killproc": False}))
+
+    def onUnpauseAction(self):
+        '''
+        Slot called once the pause action is triggered
+        '''
+        rh = getRequestHandler()
+        for index in self.tableView.selectionModel().selectedRows():
+            rowData = index.data(Qt.UserRole)
+            name = rowData.get("name")
+            self.log.info("unpausing " + name)
+            r = requests.put(rh.baseUrl + "/rendernodes/{name}/paused/".format(name=name),
+                             data=json.dumps({"paused": False, "killproc": False}))
 
     def onXTermAction(self):
         '''
@@ -114,8 +121,10 @@ class RenderNodePanel(QWidget):
         '''
         Setup all Actions this panel provides.
         '''
-        a = self.__addAction("Pause/Resume", 1)
+        a = self.__addAction("Pause", 1)
         a.triggered.connect(self.onPauseAction)
+        a = self.__addAction("Unpause", 12)
+        a.triggered.connect(self.onUnpauseAction)
         a = self.__addAction("Restart", 2)
 #         a.triggered.connect(self.onPauseAction)
         a = self.__addAction("Kill and Pause", 3)
