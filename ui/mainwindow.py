@@ -1,15 +1,13 @@
 from uuid import uuid4
 
-from PyQt4.QtCore import Qt, QSettings, QByteArray, QThread
+from PyQt4.QtCore import Qt, QSettings, QByteArray
 from PyQt4.QtGui import QMainWindow, QTabWidget, QDockWidget, QToolBar, QAction, \
     QStyle, qApp
 
-from network.requesthandler import RequestHandler
+from network.requesthandler import getRequestHandler
 from ui.about import dialog
 from ui.pool.panel import PoolPanel
-from ui.rendernode.model import RenderNodeTableModel
 from ui.rendernode.panel import RenderNodePanel
-from ui.pool.model import PoolTableModel
 
 
 class MainWindow(QMainWindow):
@@ -17,17 +15,6 @@ class MainWindow(QMainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
         self.setWindowTitle('Puli Monitor')
-
-        # create the request thread and the object, that queries the server for data
-        self.requestThread = QThread()
-        self.requestHandler = RequestHandler()
-        self.requestHandler.moveToThread(self.requestThread)
-        self.requestThread.started.connect(self.requestHandler.start)
-        self.requestThread.finished.connect(self.requestHandler.deleteLater)
-
-        # members for the data models shared between views
-        self.rendernodesModel = None
-        self.poolModel = None
 
         # setup menus and toolbars
         self.initActions()
@@ -39,15 +26,12 @@ class MainWindow(QMainWindow):
         self.addRenderNodePanel()
         self.restoreSettings()
 
-        # start querying
-        self.requestThread.start()
-
     def initActions(self):
         '''
         Create and setup actions valid in the main window
         '''
         self.refreshAction = QAction(qApp.style().standardIcon(QStyle.SP_BrowserReload), "Refresh", self)
-        self.refreshAction.triggered.connect(self.requestHandler.requestAll)
+        self.refreshAction.triggered.connect(getRequestHandler().requestAll)
 
         self.prefsEditAction = QAction('Preferences', self)
         self.prefsEditAction.triggered.connect(self.editPreferences)
@@ -95,11 +79,7 @@ class MainWindow(QMainWindow):
         '''
         dock = QDockWidget("Rendernodes", self)
         dock.setObjectName("rendernodes-dock-{0}".format(uuid4().hex))
-        if not self.rendernodesModel:
-            self.rendernodesModel = RenderNodeTableModel(self)
-            self.requestHandler.renderNodesUpdated.connect(self.rendernodesModel.onDataUpdate)
-        renderNodePanel = RenderNodePanel(self.rendernodesModel, dock)
-        dock.setWidget(renderNodePanel)
+        dock.setWidget(RenderNodePanel(dock))
         self.addDockWidget(Qt.TopDockWidgetArea, dock)
 
     def addPoolsPanel(self):
@@ -109,10 +89,7 @@ class MainWindow(QMainWindow):
         '''
         dock = QDockWidget("Pools", self)
         dock.setObjectName("pools-dock-{0}".format(uuid4().hex))
-        if not self.poolModel:
-            self.poolModel = PoolTableModel(self)
-            self.requestHandler.poolsUpdated.connect(self.poolModel.onDataUpdate)
-        poolPanel = PoolPanel(self.poolModel, dock)
+        poolPanel = PoolPanel(dock)
         dock.setWidget(poolPanel)
         self.addDockWidget(Qt.TopDockWidgetArea, dock)
 

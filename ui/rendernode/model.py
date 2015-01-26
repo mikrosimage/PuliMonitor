@@ -3,6 +3,7 @@ from PyQt4.QtCore import QAbstractTableModel, Qt, QModelIndex
 from PyQt4.QtGui import QColor, QSortFilterProxyModel, QStyle, qApp
 
 from octopus.core.enums.rendernode import RN_STATUS_NAMES, RN_UNKNOWN
+from network.requesthandler import getRequestHandler
 
 
 # TODO: add these columns
@@ -51,6 +52,8 @@ class RenderNodeTableModel(QAbstractTableModel):
 
     def __init__(self, parent=None):
         QAbstractTableModel.__init__(self, parent)
+        self.requestHandler = getRequestHandler()
+        self.requestHandler.renderNodesUpdated.connect(self.onDataUpdate)
         self.rows = []
 
     def onDataUpdate(self, requestData):

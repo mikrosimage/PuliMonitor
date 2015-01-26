@@ -1,10 +1,27 @@
 import logging
 
 from PyQt4.QtCore import QObject, pyqtSignal, QTimer, QThread
-from PyQt4.QtGui import QApplication
+from PyQt4.QtGui import QApplication, qApp
 import requests
 
 from util.config import Config
+
+
+requestHandler = None
+requestThread = None
+
+
+def getRequestHandler():
+    global requestHandler
+    global requestThread
+    if not requestHandler:
+        requestThread = QThread(qApp)
+        requestHandler = RequestHandler(qApp)
+        requestHandler.moveToThread(requestThread)
+        requestThread.started.connect(requestHandler.start)
+        requestThread.finished.connect(requestHandler.deleteLater)
+        requestThread.start()
+    return requestHandler
 
 
 class RequestHandler(QObject):
@@ -34,8 +51,7 @@ class RequestHandler(QObject):
         self.renderNodesVisible = False
         self.poolsVisible = False
 
-        self.__rnRequestErrorLogged = False
-        self.__poolRequestErrorLogged = False
+        self.__requestErrorLogged = False
 
     def start(self):
         self.log.debug("started")
@@ -54,10 +70,10 @@ class RequestHandler(QObject):
         self.log.debug("request render nodes")
         try:
             r = requests.get(self.rnUrl)
-            self.__rnRequestErrorLogged = False
+            self.__requestErrorLogged = False
         except:
             # log a request error only once
-            if not self.__rnRequestErrorLogged:
+            if not self.__requestErrorLogged:
                 self.log.exception("Query all rendernodes request to server failed.")
                 return
         if r.status_code == 200:
@@ -74,10 +90,10 @@ class RequestHandler(QObject):
         self.log.debug("request pools")
         try:
             r = requests.get(self.poolUrl)
-            self.__poolRequestErrorLogged = False
+            self.__requestErrorLogged = False
         except:
             # log a request error only once
-            if not self.__poolRequestErrorLogged:
+            if not self.__requestErrorLogged:
                 self.log.exception("Query all pools request to server failed.")
                 return
         if r.status_code == 200:

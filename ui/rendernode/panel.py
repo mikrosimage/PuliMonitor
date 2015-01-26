@@ -2,11 +2,12 @@ import logging
 import subprocess
 
 from PyQt4.QtCore import Qt
-from PyQt4.QtGui import QWidget, QVBoxLayout, QHBoxLayout, QMessageBox
+from PyQt4.QtGui import QWidget, QVBoxLayout, QHBoxLayout, QMessageBox, qApp
+import requests
 
 from ui.action import Action
 from ui.rendernode.details import RenderNodeDetails
-from ui.rendernode.model import RenderNodeTableProxyModel
+from ui.rendernode.model import RenderNodeTableProxyModel, RenderNodeTableModel
 from ui.rendernode.view import RenderNodeTableView
 from ui.searchlineedit import SearchLineEdit
 from util.config import Config
@@ -15,7 +16,9 @@ from util.user import currentUser
 
 class RenderNodePanel(QWidget):
 
-    def __init__(self, renderNodesModel, parent=None):
+    sourceModel = None
+
+    def __init__(self, parent=None):
         super(RenderNodePanel, self).__init__(parent)
         self.log = logging.getLogger(__name__)
         self.mainLayout = QVBoxLayout(self)
@@ -23,7 +26,9 @@ class RenderNodePanel(QWidget):
         searchLayout = QHBoxLayout()
         searchLayout.addWidget(self.searchLineEdit)
         self.tableView = RenderNodeTableView(self)
-        self.tableModel = RenderNodeTableProxyModel(renderNodesModel, self)
+        if RenderNodePanel.sourceModel is None:
+            RenderNodePanel.sourceModel = RenderNodeTableModel(qApp)
+        self.tableModel = RenderNodeTableProxyModel(RenderNodePanel.sourceModel, self)
         self.searchLineEdit.setModel(self.tableModel)
         self.tableView.setModel(self.tableModel)
         self.mainLayout.addLayout(searchLayout)
@@ -50,7 +55,20 @@ class RenderNodePanel(QWidget):
         '''
         Slot called once the pause action is triggered
         '''
-        print "pause clicked"
+        self.log.debug("request pause render node")
+        try:
+            r = requests.put(self.rnUrl)
+            self.__requestErrorLogged = False
+        except:
+            # log a request error only once
+            if not self.__requestErrorLogged:
+                self.log.exception("Query all rendernodes request to server failed.")
+                return
+        if r.status_code == 200:
+            jsonData = r.json().get("rendernodes")
+            self.renderNodesUpdated.emit(jsonData)
+        else:
+            self.log.error("Error querying for all rendernodes.")
 
     def onXTermAction(self):
         '''

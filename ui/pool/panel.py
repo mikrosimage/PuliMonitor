@@ -1,16 +1,18 @@
 import logging
 
-from PyQt4.QtGui import QWidget, QVBoxLayout, QHBoxLayout
+from PyQt4.QtGui import QWidget, QVBoxLayout, QHBoxLayout, qApp
 
 from ui.action import Action
-from ui.pool.model import PoolTableProxyModel
+from ui.pool.model import PoolTableProxyModel, PoolTableModel
 from ui.pool.view import PoolTableView
 from ui.searchlineedit import SearchLineEdit
 
 
 class PoolPanel(QWidget):
 
-    def __init__(self, poolsModel, parent=None):
+    sourceModel = None
+
+    def __init__(self, parent=None):
         super(PoolPanel, self).__init__(parent)
         self.log = logging.getLogger(__name__)
         self.mainLayout = QVBoxLayout(self)
@@ -18,7 +20,9 @@ class PoolPanel(QWidget):
         searchLayout = QHBoxLayout()
         searchLayout.addWidget(self.searchLineEdit)
         self.tableView = PoolTableView(self)
-        self.tableModel = PoolTableProxyModel(poolsModel, self)
+        if PoolPanel.sourceModel is None:
+            PoolPanel.sourceModel = PoolTableModel(qApp)
+        self.tableModel = PoolTableProxyModel(PoolPanel.sourceModel, self)
         self.searchLineEdit.setModel(self.tableModel)
         self.tableView.setModel(self.tableModel)
         self.mainLayout.addLayout(searchLayout)

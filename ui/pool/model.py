@@ -2,7 +2,9 @@
 from PyQt4.QtCore import QAbstractTableModel, Qt, QModelIndex
 from PyQt4.QtGui import QColor, QSortFilterProxyModel, QStyle, qApp
 
+from network.requesthandler import getRequestHandler
 from octopus.core.enums.rendernode import RN_STATUS_NAMES
+
 
 COL_NAMES = ("Image", "ID", "Name", "Pool Shares", "Rendernodes")
 COL_DATA = ("image", "id", "name", "poolShares", "renderNodes")
@@ -33,6 +35,8 @@ class PoolTableModel(QAbstractTableModel):
 
     def __init__(self, parent=None):
         QAbstractTableModel.__init__(self, parent)
+        self.requestHandler = getRequestHandler()
+        self.requestHandler.poolsUpdated.connect(self.onDataUpdate)
         self.rows = []
 
     def onDataUpdate(self, requestData):
