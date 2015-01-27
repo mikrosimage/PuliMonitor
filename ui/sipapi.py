@@ -1,7 +1,7 @@
 import sip
 
 
-def setSipApiVersion(version):
+def setVersion(version):
     '''
     Set the Sip api to the given version.
     :param version: version to use

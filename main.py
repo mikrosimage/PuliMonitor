@@ -9,8 +9,8 @@ logging.config.fileConfig(LOG_CONFIG_PATH)
 
 # setting the sip api to v2 needs to be done before importing anything Qt related
 # things, so we put it first
-from ui.qthelpers import setSipApiVersion
-setSipApiVersion(2)
+from ui.sipapi import setVersion
+setVersion(2)
 
 import sys
 
