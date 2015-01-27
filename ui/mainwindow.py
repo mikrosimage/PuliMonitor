@@ -105,9 +105,8 @@ class MainWindow(QMainWindow):
         Saves the current widget layout and frees resources
         '''
         # TODO: implement saving settings here
-        self.requestHandler.stop()
-        self.requestThread.quit()
-        self.requestThread.wait()
+        rh = getRequestHandler()
+        rh.stop()
         self.saveSettings()
         return QMainWindow.closeEvent(self, *args, **kwargs)
 

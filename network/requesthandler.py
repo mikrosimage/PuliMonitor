@@ -63,6 +63,9 @@ class RequestHandler(QObject):
     def stop(self):
         self.log.debug("stopped")
         self.timer.stop()
+        t = self.thread()
+        t.quit()
+        t.wait()
 
     def queryAllRenderNodes(self):
         '''
