@@ -16,6 +16,7 @@ class StatsWidget(QWidget):
         super(StatsWidget, self).__init__(parent)
         self.mainLayout = QHBoxLayout(self)
         self.mainLayout.setMargin(2)
+        self.mainLayout.addStretch()
         self.setLayout(self.mainLayout)
         self.statLabels = {}
         self.__firstVLine = True
@@ -30,7 +31,7 @@ class StatsWidget(QWidget):
                 if self.__firstVLine:
                     self.__firstVLine = False
                 else:
-                    self.mainLayout.insertWidget(-1, VLine(self))
+                    self.mainLayout.addWidget(VLine(self))
                 self.mainLayout.addWidget(label)
                 self.statLabels[statName] = label
             label.setText("%s: %s" % (statName, statValue))

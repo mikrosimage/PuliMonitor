@@ -25,6 +25,7 @@ class RenderNodePanel(QWidget):
         super(RenderNodePanel, self).__init__(parent)
         self.log = logging.getLogger(__name__)
         self.mainLayout = QVBoxLayout(self)
+        self.mainLayout.setSpacing(2)
         self.searchLineEdit = SearchLineEdit(self)
         searchLayout = QHBoxLayout()
         searchLayout.addWidget(self.searchLineEdit)
