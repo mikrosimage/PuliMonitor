@@ -10,6 +10,7 @@ from network.requesthandler import getRequestHandler
 from ui.action import Action
 from ui.rendernode.details import RenderNodeDetails
 from ui.rendernode.model import RenderNodeTableProxyModel, RenderNodeTableModel
+from ui.rendernode.stats import RenderNodeStatsWidget
 from ui.rendernode.view import RenderNodeTableView
 from ui.searchlineedit import SearchLineEdit
 from util.config import Config
@@ -35,6 +36,8 @@ class RenderNodePanel(QWidget):
         self.tableView.setModel(self.tableModel)
         self.mainLayout.addLayout(searchLayout)
         self.mainLayout.addWidget(self.tableView)
+        self.statsWidget = RenderNodeStatsWidget(self)
+        self.mainLayout.addWidget(self.statsWidget)
         self.renderNodeDetails = RenderNodeDetails(self)
         self.mainLayout.addWidget(self.renderNodeDetails)
         self.tableView.selectionModel().selectionChanged.connect(self._selectionChanged)

@@ -4,6 +4,7 @@ from PyQt4.QtCore import QObject, pyqtSignal, QTimer, QThread
 from PyQt4.QtGui import QApplication, qApp
 import requests
 
+from octopus.core.enums.rendernode import RN_STATUS, RN_STATUS_NAMES
 from util.config import Config
 
 
@@ -35,6 +36,7 @@ class RequestHandler(QObject):
     '''
 
     renderNodesUpdated = pyqtSignal(list)
+    renderNodesStatsChanged = pyqtSignal(list)
     poolsUpdated = pyqtSignal(list)
 
     def __init__(self, parent=None):
@@ -79,6 +81,14 @@ class RequestHandler(QObject):
         if r.status_code == 200:
             jsonData = r.json().get("rendernodes")
             self.renderNodesUpdated.emit(jsonData)
+            stats = [("Total", len(jsonData))]
+
+            statusCounts = {}
+            for node in jsonData:
+                sn = RN_STATUS_NAMES[node.get("status")]
+                statusCounts[sn] = statusCounts.setdefault(sn, 0) + 1
+            stats += sorted(statusCounts.items())
+            self.renderNodesStatsChanged.emit(stats)
         else:
             self.log.error("Error querying for all rendernodes.")
 
