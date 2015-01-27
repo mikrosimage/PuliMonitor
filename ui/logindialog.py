@@ -1,5 +1,6 @@
 import getpass
 
+from PyQt4.QtCore import QSettings, QByteArray
 from PyQt4.QtGui import QDialog, QVBoxLayout, QFormLayout, \
     QLabel, QLineEdit, QDialogButtonBox, QApplication
 
@@ -27,6 +28,11 @@ class LoginDialog(QDialog):
         via user.currentUser()
         """
         QDialog.__init__(self, parent)
+        settings = QSettings()
+        settings.beginGroup(self.__class__.__name__)
+        self.restoreGeometry(settings.value("geometry", QByteArray()))
+        settings.endGroup()
+
         self.setWindowTitle("Login")
         self.verticalLayout = QVBoxLayout(self)
         self.formLayout = QFormLayout()
@@ -63,6 +69,10 @@ class LoginDialog(QDialog):
         password = self.passwordLineEdit.text()
         if userIsValid(username, password):
             user.loginUser(username)
+            settings = QSettings()
+            settings.beginGroup(self.__class__.__name__)
+            settings.setValue("geometry", self.saveGeometry())
+            settings.endGroup()
             QDialog.accept(self)
         else:
             self.statusLabel.setText("Incorrect login!")
