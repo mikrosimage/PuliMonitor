@@ -6,6 +6,7 @@ from PyQt4.QtGui import QMainWindow, QTabWidget, QDockWidget, QToolBar, QAction,
 
 from network.requesthandler import getRequestHandler
 from ui.about import dialog
+from ui.job.panel import JobPanel
 from ui.pool.panel import PoolPanel
 from ui.rendernode.panel import RenderNodePanel
 
@@ -24,6 +25,7 @@ class MainWindow(QMainWindow):
         # setup docks and rendernode panels
         self.setTabPosition(Qt.TopDockWidgetArea, QTabWidget.North)
         self.addRenderNodePanel()
+#         self.addJobPanel()
         self.restoreSettings()
 
     def initActions(self):
@@ -84,13 +86,24 @@ class MainWindow(QMainWindow):
 
     def addPoolsPanel(self):
         '''
-        Add a pool panel to the main window All views on the panels
+        Add a pool panel to the main window. All views on the panels
         share one data model.
         '''
         dock = QDockWidget("Pools", self)
         dock.setObjectName("pools-dock-{0}".format(uuid4().hex))
         poolPanel = PoolPanel(dock)
         dock.setWidget(poolPanel)
+        self.addDockWidget(Qt.TopDockWidgetArea, dock)
+
+    def addJobPanel(self):
+        '''
+        Add a job panel to the main window. All views on the panels
+        share one data model.
+        '''
+        dock = QDockWidget("Jobs", self)
+        dock.setObjectName("jobs-dock-{0}".format(uuid4().hex))
+        jobPanel = JobPanel(dock)
+        dock.setWidget(jobPanel)
         self.addDockWidget(Qt.TopDockWidgetArea, dock)
 
     def editPreferences(self):

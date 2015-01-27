@@ -4,7 +4,7 @@ from PyQt4.QtCore import QObject, pyqtSignal, QTimer, QThread
 from PyQt4.QtGui import QApplication, qApp
 import requests
 
-from octopus.core.enums.rendernode import RN_STATUS, RN_STATUS_NAMES
+from octopus.core.enums.rendernode import RN_STATUS_NAMES
 from util.config import Config
 
 
@@ -47,6 +47,7 @@ class RequestHandler(QObject):
                                                      port=self.config.port)
         self.rnUrl = "{baseurl}/rendernodes".format(baseurl=self.baseUrl)
         self.poolUrl = "{baseurl}/pools".format(baseurl=self.baseUrl)
+        self.jobUrl = "{baseurl}/tasks".format(baseurl=self.baseUrl)
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.requestAll)
 
@@ -114,6 +115,25 @@ class RequestHandler(QObject):
             self.poolsUpdated.emit(jsonData)
         else:
             self.log.error("Error querying for all pools.")
+
+    def queryAllJobs(self):
+        '''
+        Retrieves all render nodes from the server and publishes the data via the
+        renderNodesUpdated signal.
+        '''
+        self.log.debug("request jobs")
+        try:
+            r = requests.get(self.jobUrl)
+            self.__requestErrorLogged = False
+        except:
+            # log a request error only once
+            if not self.__requestErrorLogged:
+                self.log.exception("Query all jobs request to server failed.")
+                return
+        if r.status_code == 200:
+            jsonData = r.json()
+        else:
+            self.log.error("Error querying for all jobs.")
 
     def requestAll(self):
         '''
