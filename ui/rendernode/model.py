@@ -92,7 +92,7 @@ class RenderNodeTableModel(QAbstractTableModel):
                     return "{0} MB".format(data)
                 elif columnName == "RAM Usage":
                     total = float(rowData["systemFreeRam"])
-                    return (rowData["ramSize"] - total) / total * 100.0
+                    return max(min(100.0, (rowData["ramSize"] - total) / total * 100.0), 0.0)
                 else:
                     return data
         if role == Qt.BackgroundRole:
