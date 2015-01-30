@@ -9,25 +9,25 @@ def fulfilled():
     try:
         imp.find_module('requests')
     except:
-        log.error("Requests library missing")
+        log.error("'requests' library is missing")
         res = False
 
     try:
         imp.find_module('PyQt4')
     except:
-        log.error("PyQt4 library missing")
+        log.error("'PyQt4' library is missing")
         res = False
 
     try:
         imp.find_module('sip')
     except:
-        log.error("Sip library missing")
+        log.error("'Sip' library is missing")
         res = False
 
     try:
         imp.find_module('octopus')
     except:
-        log.error("Puli octopus library missing")
+        log.error("OpenRenderManagement's 'octopus' package is missing")
         res = False
 
     if not res:
