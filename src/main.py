@@ -8,19 +8,19 @@ import sys
 
 # setting the sip api to v2 needs to be done before importing anything Qt related
 # things, so we put it first
-from ui.sipapi import setVersion
+from pulimonitor.ui.sipapi import setVersion
 setVersion(2)
 
 from PyQt4.QtGui import QApplication, QIcon, QMessageBox
 
-from network.utils import testConnectivity
-from ui.about import APP_NAME
-from ui.logindialog import LoginDialog
-from ui.mainwindow import MainWindow
-from ui.palette import standardPalette
-from util import exceptionhook
-from util import requirements
-from util.path import LOG_CONFIG_PATH
+from pulimonitor.network.utils import testConnectivity
+from pulimonitor.ui.about import APP_NAME
+from pulimonitor.ui.logindialog import LoginDialog
+from pulimonitor.ui.mainwindow import MainWindow
+from pulimonitor.ui.palette import standardPalette
+from pulimonitor.util import exceptionhook
+from pulimonitor.util import requirements
+from pulimonitor.util.path import LOG_CONFIG_PATH
 
 
 def main():

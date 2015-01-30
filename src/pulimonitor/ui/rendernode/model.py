@@ -3,7 +3,7 @@ from PyQt4.QtCore import QAbstractTableModel, Qt, QModelIndex
 from PyQt4.QtGui import QColor, QSortFilterProxyModel, QStyle, qApp
 
 from octopus.core.enums.rendernode import RN_STATUS_NAMES, RN_UNKNOWN
-from network.requesthandler import getRequestHandler
+from pulimonitor.network.requesthandler import getRequestHandler
 
 
 # TODO: add these columns

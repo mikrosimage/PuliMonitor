@@ -6,15 +6,15 @@ from PyQt4.QtCore import Qt
 from PyQt4.QtGui import QWidget, QVBoxLayout, QHBoxLayout, QMessageBox, qApp
 import requests
 
-from network.requesthandler import getRequestHandler
-from ui.action import Action
-from ui.rendernode.details import RenderNodeDetails
-from ui.rendernode.model import RenderNodeTableProxyModel, RenderNodeTableModel
-from ui.rendernode.stats import RenderNodeStatsWidget
-from ui.rendernode.view import RenderNodeTableView
-from ui.searchlineedit import SearchLineEdit
-from util.config import Config
-from util.user import currentUser
+from pulimonitor.network.requesthandler import getRequestHandler
+from pulimonitor.ui.action import Action
+from pulimonitor.ui.rendernode.details import RenderNodeDetails
+from pulimonitor.ui.rendernode.model import RenderNodeTableProxyModel, RenderNodeTableModel
+from pulimonitor.ui.rendernode.stats import RenderNodeStatsWidget
+from pulimonitor.ui.rendernode.view import RenderNodeTableView
+from pulimonitor.ui.searchlineedit import SearchLineEdit
+from pulimonitor.util.config import Config
+from pulimonitor.util.user import currentUser
 
 
 class RenderNodePanel(QWidget):
@@ -66,8 +66,8 @@ class RenderNodePanel(QWidget):
             rowData = index.data(Qt.UserRole)
             name = rowData.get("name")
             self.log.info("pausing " + name)
-            r = requests.put(rh.baseUrl + "/rendernodes/{name}/paused/".format(name=name),
-                             data=json.dumps({"paused": True, "killproc": False}))
+            requests.put(rh.baseUrl + "/rendernodes/{name}/paused/".format(name=name),
+                         data=json.dumps({"paused": True, "killproc": False}))
 
     def onUnpauseAction(self):
         '''
@@ -78,8 +78,8 @@ class RenderNodePanel(QWidget):
             rowData = index.data(Qt.UserRole)
             name = rowData.get("name")
             self.log.info("unpausing " + name)
-            r = requests.put(rh.baseUrl + "/rendernodes/{name}/paused/".format(name=name),
-                             data=json.dumps({"paused": False, "killproc": False}))
+            requests.put(rh.baseUrl + "/rendernodes/{name}/paused/".format(name=name),
+                         data=json.dumps({"paused": False, "killproc": False}))
 
     def onXTermAction(self):
         '''

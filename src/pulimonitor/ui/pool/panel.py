@@ -2,10 +2,10 @@ import logging
 
 from PyQt4.QtGui import QWidget, QVBoxLayout, QHBoxLayout, qApp
 
-from ui.action import Action
-from ui.pool.model import PoolTableProxyModel, PoolTableModel
-from ui.pool.view import PoolTableView
-from ui.searchlineedit import SearchLineEdit
+from pulimonitor.ui.action import Action
+from pulimonitor.ui.pool.model import PoolTableProxyModel, PoolTableModel
+from pulimonitor.ui.pool.view import PoolTableView
+from pulimonitor.ui.searchlineedit import SearchLineEdit
 
 
 class PoolPanel(QWidget):

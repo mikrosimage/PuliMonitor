@@ -1,9 +1,9 @@
 from PyQt4.QtCore import Qt
 from PyQt4.QtGui import QAbstractItemView, QMenu, QCursor
 
-from ui.headerview import HeaderView
-from ui.pool.model import COL_INIT_WIDTH
-from ui.tableview import TableView
+from pulimonitor.ui.headerview import HeaderView
+from pulimonitor.ui.pool.model import COL_INIT_WIDTH
+from pulimonitor.ui.tableview import TableView
 
 
 class PoolHeaderView(HeaderView):

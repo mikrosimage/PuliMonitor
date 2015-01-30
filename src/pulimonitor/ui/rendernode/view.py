@@ -1,10 +1,10 @@
 from PyQt4.QtCore import Qt
 from PyQt4.QtGui import QAbstractItemView, QMenu, QCursor
 
-from ui.headerview import HeaderView
-from ui.progressbardelegate import ProgressBarDelegate
-from ui.rendernode.model import RN_COL_INIT_WIDTH, RN_COL_NAMES
-from ui.tableview import TableView
+from pulimonitor.ui.headerview import HeaderView
+from pulimonitor.ui.progressbardelegate import ProgressBarDelegate
+from pulimonitor.ui.rendernode.model import RN_COL_INIT_WIDTH, RN_COL_NAMES
+from pulimonitor.ui.tableview import TableView
 
 
 class RenderNodeHeaderView(HeaderView):

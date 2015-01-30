@@ -3,11 +3,11 @@ import logging
 from PyQt4.QtCore import Qt
 from PyQt4.QtGui import QWidget, QVBoxLayout, QHBoxLayout, qApp
 
-from ui.action import Action
-from ui.job.details import JobDetails
-from ui.job.model import JobTreeProxyModel, JobTreeModel
-from ui.job.view import JobTreeView
-from ui.searchlineedit import SearchLineEdit
+from pulimonitor.ui.action import Action
+from pulimonitor.ui.job.details import JobDetails
+from pulimonitor.ui.job.model import JobTreeProxyModel, JobTreeModel
+from pulimonitor.ui.job.view import JobTreeView
+from pulimonitor.ui.searchlineedit import SearchLineEdit
 
 
 class JobPanel(QWidget):

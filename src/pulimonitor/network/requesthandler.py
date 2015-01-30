@@ -5,7 +5,7 @@ from PyQt4.QtGui import QApplication, qApp
 import requests
 
 from octopus.core.enums.rendernode import RN_STATUS_NAMES
-from util.config import Config
+from pulimonitor.util.config import Config
 
 
 requestHandler = None
@@ -132,6 +132,7 @@ class RequestHandler(QObject):
                 return
         if r.status_code == 200:
             jsonData = r.json()
+            print jsonData
         else:
             self.log.error("Error querying for all jobs.")
 

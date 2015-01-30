@@ -1,6 +1,6 @@
 import requests
 
-from util.config import Config
+from pulimonitor.util.config import Config
 
 
 def testConnectivity():

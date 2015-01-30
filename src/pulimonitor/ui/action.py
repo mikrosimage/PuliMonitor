@@ -1,5 +1,5 @@
 from PyQt4.QtGui import QAction
-from util.user import currentUser
+from pulimonitor.util.user import currentUser
 
 
 class Action(QAction):

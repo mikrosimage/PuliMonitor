@@ -4,8 +4,8 @@ Created on Jan 27, 2015
 @author: Sebastian Elsner
 @organization: rise|fx GmbH
 '''
-from ui.stats import StatsWidget
-from network.requesthandler import getRequestHandler
+from pulimonitor.ui.stats import StatsWidget
+from pulimonitor.network.requesthandler import getRequestHandler
 
 
 class RenderNodeStatsWidget(StatsWidget):

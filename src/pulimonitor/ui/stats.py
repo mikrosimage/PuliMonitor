@@ -6,8 +6,8 @@ Created on Jan 27, 2015
 '''
 from PyQt4.QtGui import QWidget, QLabel, QHBoxLayout, QApplication
 
-from network.requesthandler import getRequestHandler
-from ui.misc import VLine
+from pulimonitor.network.requesthandler import getRequestHandler
+from pulimonitor.ui.misc import VLine
 
 
 class StatsWidget(QWidget):

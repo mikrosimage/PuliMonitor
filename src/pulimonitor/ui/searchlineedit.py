@@ -1,7 +1,7 @@
 from PyQt4.QtCore import pyqtSignal, Qt
 from PyQt4.QtGui import QLineEdit, QToolButton, QIcon, QStyle, QApplication
 
-from resources import icons  # @UnusedImport
+from pulimonitor.resources import icons  # @UnusedImport
 
 
 class SearchLineEdit(QLineEdit):

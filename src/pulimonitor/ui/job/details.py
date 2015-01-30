@@ -1,15 +1,15 @@
 from PyQt4.QtGui import QFormLayout, QApplication, QLineEdit, QGroupBox
 
-from ui.rendernode.model import RN_COL_NAMES, RN_COL_DATA
+from pulimonitor.ui.job.model import JOB_COL_DATA, JOB_COL_NAMES
 
 
-class RenderNodeDetails(QGroupBox):
+class JobDetails(QGroupBox):
 
     def __init__(self, parent=None):
-        super(RenderNodeDetails, self).__init__(parent)
+        super(JobDetails, self).__init__(parent)
         layout = QFormLayout(self)
         self.dataWidgets = {}
-        for name, dataName in zip(RN_COL_NAMES, RN_COL_DATA):
+        for name, dataName in zip(JOB_COL_NAMES, JOB_COL_DATA):
             lineedit = QLineEdit(self)
             self.dataWidgets[dataName] = lineedit
             layout.addRow(name, lineedit)
@@ -23,7 +23,7 @@ class RenderNodeDetails(QGroupBox):
 def main():
     import sys
     app = QApplication([])
-    w = RenderNodeDetails()
+    w = JobDetails()
     w.show()
     sys.exit(app.exec_())
 

@@ -1,6 +1,6 @@
 from PyQt4.QtCore import QSettings
 
-from util.path import GENERAL_CONFIG_PATH
+from pulimonitor.util.path import GENERAL_CONFIG_PATH
 
 
 class Config(QSettings):

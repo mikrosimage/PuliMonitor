@@ -2,7 +2,7 @@
 from PyQt4.QtCore import Qt
 from PyQt4.QtGui import QColor, QSortFilterProxyModel
 
-from ui.treemodel import TreeModel
+from pulimonitor.ui.treemodel import TreeModel
 
 
 JOB_COL_NAMES = ("Image", "ID", "Name")

@@ -4,7 +4,7 @@ from PyQt4.QtCore import QSettings, QByteArray
 from PyQt4.QtGui import QDialog, QVBoxLayout, QFormLayout, \
     QLabel, QLineEdit, QDialogButtonBox, QApplication
 
-from util import user
+from pulimonitor.util import user
 
 
 def userIsValid(username, password):

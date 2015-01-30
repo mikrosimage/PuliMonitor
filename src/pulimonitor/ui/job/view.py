@@ -1,8 +1,8 @@
 from PyQt4.QtCore import Qt
 from PyQt4.QtGui import QAbstractItemView, QMenu, QCursor, QTreeView
 
-from ui.headerview import HeaderView
-from ui.rendernode.model import RN_COL_INIT_WIDTH
+from pulimonitor.ui.headerview import HeaderView
+from pulimonitor.ui.rendernode.model import RN_COL_INIT_WIDTH
 
 
 class JobHeaderView(HeaderView):

@@ -4,11 +4,11 @@ from PyQt4.QtCore import Qt, QSettings, QByteArray
 from PyQt4.QtGui import QMainWindow, QTabWidget, QDockWidget, QToolBar, QAction, \
     QStyle, qApp
 
-from network.requesthandler import getRequestHandler
-from ui.about import dialog
-from ui.job.panel import JobPanel
-from ui.pool.panel import PoolPanel
-from ui.rendernode.panel import RenderNodePanel
+from pulimonitor.network.requesthandler import getRequestHandler
+from pulimonitor.ui.about import dialog
+from pulimonitor.ui.job.panel import JobPanel
+from pulimonitor.ui.pool.panel import PoolPanel
+from pulimonitor.ui.rendernode.panel import RenderNodePanel
 
 
 class MainWindow(QMainWindow):
