@@ -18,6 +18,7 @@ Contents:
    requirements
    installation
    architecture
+   modules
    
 
 Indices and tables

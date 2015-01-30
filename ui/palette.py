@@ -190,4 +190,4 @@ def standardPalette():
     return palette
 
 
-__all__ = ("standardPalette")
+__all__ = ("standardPalette",)

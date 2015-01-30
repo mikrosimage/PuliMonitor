@@ -7,6 +7,5 @@
    main
    network
    resources
-   test
    ui
    util
