@@ -32,5 +32,13 @@ Building the documenatation
 1. install Python Sphinx
 2. in the "docs" subfolder run:
 ```sh
-sphinx-apidoc -f -o . ../
-make html```
+make html
+```
+
+To automatically create docs from the source files:
+
+```sh
+cd docs/
+sphinx-apidoc -f -o . ../src
+```
+
