@@ -1,0 +1,217 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>ui.job package &mdash; PuliMonitor 0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="PuliMonitor 0 documentation" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="index.html">PuliMonitor 0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="ui-job-package">
+<h1>ui.job package<a class="headerlink" href="#ui-job-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-ui.job.details">
+<span id="ui-job-details-module"></span><h2>ui.job.details module<a class="headerlink" href="#module-ui.job.details" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ui.job.details.JobDetails">
+<em class="property">class </em><tt class="descclassname">ui.job.details.</tt><tt class="descname">JobDetails</tt><big>(</big><em>parent=None</em><big>)</big><a class="headerlink" href="#ui.job.details.JobDetails" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">PyQt4.QtGui.QGroupBox</span></tt></p>
+<dl class="method">
+<dt id="ui.job.details.JobDetails.refresh">
+<tt class="descname">refresh</tt><big>(</big><em>row</em><big>)</big><a class="headerlink" href="#ui.job.details.JobDetails.refresh" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="ui.job.details.main">
+<tt class="descclassname">ui.job.details.</tt><tt class="descname">main</tt><big>(</big><big>)</big><a class="headerlink" href="#ui.job.details.main" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-ui.job.model">
+<span id="ui-job-model-module"></span><h2>ui.job.model module<a class="headerlink" href="#module-ui.job.model" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ui.job.model.JobTreeModel">
+<em class="property">class </em><tt class="descclassname">ui.job.model.</tt><tt class="descname">JobTreeModel</tt><big>(</big><em>parent=None</em><big>)</big><a class="headerlink" href="#ui.job.model.JobTreeModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="ui.html#ui.treemodel.TreeModel" title="ui.treemodel.TreeModel"><tt class="xref py py-class docutils literal"><span class="pre">ui.treemodel.TreeModel</span></tt></a></p>
+<dl class="method">
+<dt id="ui.job.model.JobTreeModel.onDataUpdate">
+<tt class="descname">onDataUpdate</tt><big>(</big><em>requestData</em><big>)</big><a class="headerlink" href="#ui.job.model.JobTreeModel.onDataUpdate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ui.job.model.JobTreeProxyModel">
+<em class="property">class </em><tt class="descclassname">ui.job.model.</tt><tt class="descname">JobTreeProxyModel</tt><big>(</big><em>sourceModel</em>, <em>parent=None</em><big>)</big><a class="headerlink" href="#ui.job.model.JobTreeProxyModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">PyQt4.QtGui.QSortFilterProxyModel</span></tt></p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ui.job.panel">
+<span id="ui-job-panel-module"></span><h2>ui.job.panel module<a class="headerlink" href="#module-ui.job.panel" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ui.job.panel.JobPanel">
+<em class="property">class </em><tt class="descclassname">ui.job.panel.</tt><tt class="descname">JobPanel</tt><big>(</big><em>parent=None</em><big>)</big><a class="headerlink" href="#ui.job.panel.JobPanel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">PyQt4.QtGui.QWidget</span></tt></p>
+<dl class="method">
+<dt id="ui.job.panel.JobPanel.onPauseAction">
+<tt class="descname">onPauseAction</tt><big>(</big><big>)</big><a class="headerlink" href="#ui.job.panel.JobPanel.onPauseAction" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ui.job.panel.JobPanel.setupActions">
+<tt class="descname">setupActions</tt><big>(</big><big>)</big><a class="headerlink" href="#ui.job.panel.JobPanel.setupActions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup all Actions this panel provides.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ui.job.panel.JobPanel.sourceModel">
+<tt class="descname">sourceModel</tt><em class="property"> = None</em><a class="headerlink" href="#ui.job.panel.JobPanel.sourceModel" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ui.job.view">
+<span id="ui-job-view-module"></span><h2>ui.job.view module<a class="headerlink" href="#module-ui.job.view" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ui.job.view.JobHeaderView">
+<em class="property">class </em><tt class="descclassname">ui.job.view.</tt><tt class="descname">JobHeaderView</tt><big>(</big><em>orientation</em>, <em>parent=None</em><big>)</big><a class="headerlink" href="#ui.job.view.JobHeaderView" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="ui.html#ui.headerview.HeaderView" title="ui.headerview.HeaderView"><tt class="xref py py-class docutils literal"><span class="pre">ui.headerview.HeaderView</span></tt></a></p>
+<p>Subclass re-implementing the necessary methods to for the additional
+functionality from HeaderView.</p>
+<dl class="method">
+<dt id="ui.job.view.JobHeaderView.sectionHiddenStatus">
+<tt class="descname">sectionHiddenStatus</tt><big>(</big><big>)</big><a class="headerlink" href="#ui.job.view.JobHeaderView.sectionHiddenStatus" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ui.job.view.JobHeaderView.sectionResizeModes">
+<tt class="descname">sectionResizeModes</tt><big>(</big><big>)</big><a class="headerlink" href="#ui.job.view.JobHeaderView.sectionResizeModes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ui.job.view.JobHeaderView.sectionSizes">
+<tt class="descname">sectionSizes</tt><big>(</big><big>)</big><a class="headerlink" href="#ui.job.view.JobHeaderView.sectionSizes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ui.job.view.JobTreeView">
+<em class="property">class </em><tt class="descclassname">ui.job.view.</tt><tt class="descname">JobTreeView</tt><big>(</big><em>parent=None</em><big>)</big><a class="headerlink" href="#ui.job.view.JobTreeView" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">PyQt4.QtGui.QTreeView</span></tt></p>
+<p>Subclass providing a context menu and custom settings for the job tree view.</p>
+<dl class="method">
+<dt id="ui.job.view.JobTreeView.onContextMenu">
+<tt class="descname">onContextMenu</tt><big>(</big><em>pos</em><big>)</big><a class="headerlink" href="#ui.job.view.JobTreeView.onContextMenu" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ui.job">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-ui.job" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">ui.job package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-ui.job.details">ui.job.details module</a></li>
+<li><a class="reference internal" href="#module-ui.job.model">ui.job.model module</a></li>
+<li><a class="reference internal" href="#module-ui.job.panel">ui.job.panel module</a></li>
+<li><a class="reference internal" href="#module-ui.job.view">ui.job.view module</a></li>
+<li><a class="reference internal" href="#module-ui.job">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/ui.job.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="index.html">PuliMonitor 0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Jérôme Samson, Sebastian Elsner et al..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>
