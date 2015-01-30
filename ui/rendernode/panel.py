@@ -30,6 +30,7 @@ class RenderNodePanel(QWidget):
         searchLayout = QHBoxLayout()
         searchLayout.addWidget(self.searchLineEdit)
         self.tableView = RenderNodeTableView(self)
+        self.statsWidget = RenderNodeStatsWidget(self)
         if RenderNodePanel.sourceModel is None:
             RenderNodePanel.sourceModel = RenderNodeTableModel(qApp)
         self.tableModel = RenderNodeTableProxyModel(RenderNodePanel.sourceModel, self)
@@ -37,7 +38,6 @@ class RenderNodePanel(QWidget):
         self.tableView.setModel(self.tableModel)
         self.mainLayout.addLayout(searchLayout)
         self.mainLayout.addWidget(self.tableView)
-        self.statsWidget = RenderNodeStatsWidget(self)
         self.mainLayout.addWidget(self.statsWidget)
         self.renderNodeDetails = RenderNodeDetails(self)
         self.mainLayout.addWidget(self.renderNodeDetails)
