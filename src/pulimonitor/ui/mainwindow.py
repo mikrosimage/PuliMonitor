@@ -24,7 +24,7 @@ class MainWindow(QMainWindow):
 
         # setup docks and rendernode panels
         self.setTabPosition(Qt.TopDockWidgetArea, QTabWidget.North)
-        self.addRenderNodePanel()
+        self.addPoolsPanel()
 #         self.addJobPanel()
         self.restoreSettings()
 

@@ -63,4 +63,4 @@ def loginUser(name):
     CURRENT_USER = User(name)
     # This is just a temp hack to assign a role to an user without
     # an actual backend
-    CURRENT_USER.roles.append(Role("Admin", [1, 12, 9, 10]))
+    CURRENT_USER.roles.append(Role("Admin", [1, 12, 9, 10, 110, 111]))

@@ -144,6 +144,36 @@ class RequestHandler(QObject):
         self.queryAllRenderNodes()
         self.queryAllPools()
 
+    def addPool(self, name):
+        self.log.debug("add pool " + name)
+        try:
+            r = requests.post(self.poolUrl + "/" + name)
+            self.__requestErrorLogged = False
+        except:
+            # log a request error only once
+            if not self.__requestErrorLogged:
+                self.log.exception("Add pool request to server failed.")
+                return
+        if r.status_code == 200:
+            return True
+        else:
+            self.log.error("Error posting new pool:" + name)
+
+    def deletePool(self, name):
+        self.log.debug("delete pool " + name)
+        try:
+            r = requests.delete(self.poolUrl + "/" + name)
+            self.__requestErrorLogged = False
+        except:
+            # log a request error only once
+            if not self.__requestErrorLogged:
+                self.log.exception("Deleting pool request to server failed.")
+                return
+        if r.status_code == 200:
+            return True
+        else:
+            self.log.error("Error deleting pool:" + name)
+
 
 def main():
     import sys
