@@ -64,7 +64,7 @@ class RenderNodeTableModel(QAbstractTableModel):
             oldIndex = pIndexes.pop(row["id"], None)
             if oldIndex:
                 self.changePersistentIndex(oldIndex, self.createIndex(rowNum, oldIndex.column(), row))
-        for _rnId, oldIndex in pIndexes:
+        for _rnId, oldIndex in pIndexes.iteritems():
             self.changePersistentIndex(oldIndex, QModelIndex())
         self.layoutChanged.emit()
 
