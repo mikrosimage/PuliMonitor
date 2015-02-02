@@ -35,8 +35,26 @@ class TableView(QTableView):
     def setModel(self, *args, **kwargs):
         '''
         Reimplemented to apply section settings AFTER the model was set. This
-        is the only way to implement this behaviour since the sections are
+        is the only way to implement this behavior since the sections are
         reset when the model is applied the first time.
+        The same applies to connecting to the selectionChanged signal, which is
+        used to notify selection sensitive Actions to enable or
+        disable themselves.
         '''
         QTableView.setModel(self, *args, **kwargs)
         self.horizontalHeader().applySectionSettings()
+        self.selectionModel().selectionChanged.connect(self.onSelectionChanged)
+
+    def onSelectionChanged(self, selected, deselected):
+        '''
+        Signal called when the views selection changes. Iterates over all
+        Actions registered with this view to update their 'enabled' status
+        depending on the current selection.
+        :param selected: selected items
+        :type selected: QItemSelection
+        :param deselected: deselected items
+        :type deselected: QItemSelection
+        '''
+        hasSelection = self.selectionModel().hasSelection()
+        for action in self.actions():
+            action.setEnabledOnSelectionChange(hasSelection)

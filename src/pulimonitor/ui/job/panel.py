@@ -48,8 +48,8 @@ class JobPanel(QWidget):
             self.jobDetails.refresh(index.data(Qt.UserRole))
             return
 
-    def __addAction(self, text, aId):
-        a = Action(text, "Jobs", aId, self)
+    def __addAction(self, text, aId, selectionSensitive):
+        a = Action(text, "Jobs", aId, selectionSensitive, self)
         self.addAction(a)
         self.treeView.addAction(a)
         return a
@@ -61,5 +61,5 @@ class JobPanel(QWidget):
         '''
         Setup all Actions this panel provides.
         '''
-        a = self.__addAction("Pause", 1)
+        a = self.__addAction("Pause", 1, True)
         a.triggered.connect(self.onPauseAction)

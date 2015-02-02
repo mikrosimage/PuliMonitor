@@ -33,8 +33,8 @@ class PoolPanel(QWidget):
         self.mainLayout.addWidget(self.tableView)
         self.setupActions()
 
-    def __addAction(self, text, aId):
-        a = Action(text, "Pools", aId, self)
+    def __addAction(self, text, aId, selectionSensitive):
+        a = Action(text, "Pools", aId, selectionSensitive, self)
         self.addAction(a)
         self.tableView.addAction(a)
         return a
@@ -62,9 +62,9 @@ class PoolPanel(QWidget):
         '''
         Setup all Actions this panel provides.
         '''
-        a = self.__addAction("Add", 110)
+        a = self.__addAction("Add", 110, False)
         a.triggered.connect(self.onAddPool)
-        a = self.__addAction("Delete", 111)
+        a = self.__addAction("Delete", 111, True)
         a.triggered.connect(self.onDeletePool)
 #         a = self.__addAction("Pause/Resume", 100)
 #         a.triggered.connect(self.onPauseAction)
