@@ -30,9 +30,9 @@ class RequestHandler(QObject):
     A class handling the requests to the puli server. Results from the server
     are published via specific signals. For each type of request/listener
     (e.g. the rendernodes query request and the rendernodes view) there is a
-    separate signal. This QObject subclass is meant to run in its own Qthread,
+    separate signal. This QObject subclass is meant to run in its own QThread,
     so the requests, json parsing and instance creation does not block the
-    gui thread.
+    GUI thread.
     '''
 
     renderNodesUpdated = pyqtSignal(list)
@@ -43,18 +43,39 @@ class RequestHandler(QObject):
         super(RequestHandler, self).__init__(parent)
         self.log = logging.getLogger(__name__)
         self.config = Config(self)
-        self.baseUrl = "http://{host}:{port}".format(host=self.config.hostname,
-                                                     port=self.config.port)
+        self.serversOnline = []
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.requestAll)
+        self.baseUrl = None
+        self.rnUrl = None
+        self.poolUrl = None
+        self.jobUrl = None
+        self.__requestErrorLogged = False
+
+    def onServerChanged(self, server):
+        hostname, port = server
+        self.log.info("Server set to: {0}:{1}".format(hostname, port))
+        self.baseUrl = "http://{hostname}:{port}".format(hostname=hostname, port=port)
         self.rnUrl = "{baseurl}/rendernodes".format(baseurl=self.baseUrl)
         self.poolUrl = "{baseurl}/pools".format(baseurl=self.baseUrl)
         self.jobUrl = "{baseurl}/tasks".format(baseurl=self.baseUrl)
-        self.timer = QTimer(self)
-        self.timer.timeout.connect(self.requestAll)
 
-        self.renderNodesVisible = False
-        self.poolsVisible = False
-
-        self.__requestErrorLogged = False
+    def testServerConnectivity(self):
+        '''
+        This function tries to connect to the server configured in settings.ini
+        :returns: list -- list of names of all offline servers
+        '''
+        offline = []
+        for hostname, port in self.config.servers:
+            url = "http://{host}:{port}/pools".format(host=hostname, port=port)
+            try:
+                requests.get(url)
+                self.serversOnline.append((hostname, port))
+            except:
+                offline.append(hostname)
+        if self.serversOnline:
+            self.onServerChanged(self.serversOnline[0])
+        return offline
 
     def start(self):
         self.log.debug("started")
@@ -73,6 +94,8 @@ class RequestHandler(QObject):
         Retrieves all render nodes from the server and publishes the data via the
         renderNodesUpdated signal.
         '''
+        if not self.rnUrl:
+            return
         self.log.debug("request render nodes")
         try:
             r = requests.get(self.rnUrl)
@@ -101,6 +124,8 @@ class RequestHandler(QObject):
         Retrieves all render nodes from the server and publishes the data via the
         renderNodesUpdated signal.
         '''
+        if not self.poolUrl:
+            return
         self.log.debug("request pools")
         try:
             r = requests.get(self.poolUrl)
@@ -121,6 +146,8 @@ class RequestHandler(QObject):
         Retrieves all render nodes from the server and publishes the data via the
         renderNodesUpdated signal.
         '''
+        if not self.jobUrl:
+            return
         self.log.debug("request jobs")
         try:
             r = requests.get(self.jobUrl)

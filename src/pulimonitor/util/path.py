@@ -17,6 +17,7 @@ def cdUp(path, times=1):
         result = os.path.abspath(os.path.join(result, os.pardir))
     return result
 
+# TODO: Determing the path like this does not work well for testing
 CONFIG_DIR = os.path.join(cdUp(sys.argv[0], 2), "config")
 GENERAL_CONFIG_PATH = os.path.join(CONFIG_DIR, 'general.ini')
 LOG_CONFIG_PATH = os.path.join(CONFIG_DIR, 'logging.ini')

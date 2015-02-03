@@ -1,17 +1,22 @@
+from collections import defaultdict
+
 import requests
 
 from pulimonitor.util.config import Config
 
 
-def testConnectivity():
+def testServerConnectivity():
     '''
     This function tries to connect to the server configured in settings.ini
     :returns: boolean -- True if connection was successfull, else False
     '''
     config = Config()
-    url = "http://{host}:{port}/pools".format(host=config.hostname, port=config.port)
-    try:
-        requests.get(url)
-        return True
-    except:
-        return False
+    connectivity = defaultdict(list)
+    for hostname, port in config.servers:
+        url = "http://{host}:{port}/pools".format(host=hostname, port=port)
+        try:
+            requests.get(url)
+            connectivity["online"].append((hostname, port))
+        except:
+            connectivity["offline"].append((hostname, port))
+    return connectivity

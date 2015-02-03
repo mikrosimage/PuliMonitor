@@ -11,9 +11,13 @@ class Config(QSettings):
     def __init__(self, parent=None):
         QSettings.__init__(self, GENERAL_CONFIG_PATH, QSettings.IniFormat, parent)
 
-        self.beginGroup("Server")
-        self.hostname = self.value("hostname", "localhost", str)
-        self.port = self.value("port", 8004, int)
+        self.servers = []
+        self.beginGroup("Servers")
+        keys = self.allKeys()
+        for k in keys:
+            hostname, port = self.value(k).split(":")
+            self.servers.append((hostname, int(port)))
+        print self.servers
         self.endGroup()
 
         self.beginGroup("General")
@@ -30,5 +34,4 @@ if __name__ == '__main__':
     from PyQt4.QtGui import QApplication
     app = QApplication([])
     c = Config()
-    print c.hostname
     sys.exit(app.exec_())

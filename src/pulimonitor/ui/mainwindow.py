@@ -9,6 +9,7 @@ from pulimonitor.ui.about import dialog
 from pulimonitor.ui.job.panel import JobPanel
 from pulimonitor.ui.pool.panel import PoolPanel
 from pulimonitor.ui.rendernode.panel import RenderNodePanel
+from pulimonitor.ui.serverswitch import ServerSwitchDialog
 
 
 class MainWindow(QMainWindow):
@@ -16,7 +17,6 @@ class MainWindow(QMainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
         self.setWindowTitle('Puli Monitor')
-
         # setup menus and toolbars
         self.initActions()
         self.initMenu()
@@ -27,6 +27,8 @@ class MainWindow(QMainWindow):
         self.addPoolsPanel()
 #         self.addJobPanel()
         self.restoreSettings()
+        self.requestHandler = getRequestHandler()
+        self.requestHandler.start()
 
     def initActions(self):
         '''
@@ -34,6 +36,9 @@ class MainWindow(QMainWindow):
         '''
         self.refreshAction = QAction(qApp.style().standardIcon(QStyle.SP_BrowserReload), "Refresh", self)
         self.refreshAction.triggered.connect(getRequestHandler().requestAll)
+
+        self.switchServerAction = QAction("Switch Servers", self)
+        self.switchServerAction.triggered.connect(self.onSwitchServer)
 
         self.prefsEditAction = QAction('Preferences', self)
         self.prefsEditAction.triggered.connect(self.editPreferences)
@@ -56,6 +61,7 @@ class MainWindow(QMainWindow):
         menubar = self.menuBar()
         fileMenu = menubar.addMenu('&File')
         fileMenu.addAction(self.refreshAction)
+        fileMenu.addAction(self.switchServerAction)
         editMenu = menubar.addMenu('&Edit')
         editMenu.addAction(self.prefsEditAction)
         windowMenu = menubar.addMenu('&Window')
@@ -106,6 +112,11 @@ class MainWindow(QMainWindow):
         dock.setWidget(jobPanel)
         self.addDockWidget(Qt.TopDockWidgetArea, dock)
 
+    def onSwitchServer(self):
+        d = ServerSwitchDialog(self)
+        d.serverChanged.connect(self.requestHandler.onServerChanged)
+        d.show()
+
     def editPreferences(self):
         '''
         Slot called to open the preferences edit dialog.
@@ -118,8 +129,7 @@ class MainWindow(QMainWindow):
         Saves the current widget layout and frees resources
         '''
         # TODO: implement saving settings here
-        rh = getRequestHandler()
-        rh.stop()
+        self.requestHandler.stop()
         self.saveSettings()
         return QMainWindow.closeEvent(self, *args, **kwargs)
 
