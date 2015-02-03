@@ -6,7 +6,7 @@ from PyQt4.QtCore import Qt
 from PyQt4.QtGui import QWidget, QVBoxLayout, QHBoxLayout, QMessageBox, qApp
 import requests
 
-from pulimonitor.network.requesthandler import getRequestHandler
+from pulimonitor.network.requesthandler import RequestHandler
 from pulimonitor.ui.action import Action
 from pulimonitor.ui.rendernode.details import RenderNodeDetails
 from pulimonitor.ui.rendernode.model import RenderNodeTableProxyModel, RenderNodeTableModel
@@ -61,7 +61,7 @@ class RenderNodePanel(QWidget):
         '''
         Slot called once the pause action is triggered
         '''
-        rh = getRequestHandler()
+        rh = RequestHandler()
         for index in self.tableView.selectionModel().selectedRows():
             rowData = index.data(Qt.UserRole)
             name = rowData.get("name")
@@ -73,7 +73,7 @@ class RenderNodePanel(QWidget):
         '''
         Slot called once the pause action is triggered
         '''
-        rh = getRequestHandler()
+        rh = RequestHandler()
         for index in self.tableView.selectionModel().selectedRows():
             rowData = index.data(Qt.UserRole)
             name = rowData.get("name")

@@ -3,7 +3,7 @@ from PyQt4.QtCore import QAbstractTableModel, Qt, QModelIndex
 from PyQt4.QtGui import QColor, QSortFilterProxyModel, QStyle, qApp
 
 from octopus.core.enums.rendernode import RN_STATUS_NAMES, RN_UNKNOWN
-from pulimonitor.network.requesthandler import getRequestHandler
+from pulimonitor.network.requesthandler import RequestHandler
 
 
 # TODO: add these columns
@@ -27,7 +27,7 @@ RN_COL_DATA = ("image", "id", "name", "host", "status", "commands", "pools",
                "ramSize", "systemFreeRam", "ramUsage")
 RN_COL_INIT_WIDTH = (25, 25, 100, 100, 75)
 
-RN_NUM_COLUMNS = len(RN_COL_NAMES)
+RN_NUM_COLUMNS = len(RN_COL_DATA)
 
 RN_STATUS_COLORS = (QColor(Qt.darkGray),
                     QColor(Qt.lightGray),
@@ -52,24 +52,27 @@ class RenderNodeTableModel(QAbstractTableModel):
 
     def __init__(self, parent=None):
         QAbstractTableModel.__init__(self, parent)
-        self.requestHandler = getRequestHandler()
+        self.requestHandler = RequestHandler()
         self.requestHandler.renderNodesUpdated.connect(self.onDataUpdate)
-        self.rows = []
+        self.rendernodes = []
 
-    def onDataUpdate(self, requestData):
+    def onDataUpdate(self, rendernodes):
         self.layoutAboutToBeChanged.emit()
-        pIndexes = dict([(index.data(Qt.UserRole)["id"], index) for index in self.persistentIndexList()])
-        self.rows = requestData
-        for rowNum, row in enumerate(self.rows):
-            oldIndex = pIndexes.pop(row["id"], None)
+        pIndexes = dict([(index.data(Qt.UserRole).id, index) for index in self.persistentIndexList()])
+        self.rendernodes = rendernodes
+        for rowNum, rendernode in enumerate(self.rendernodes):
+            oldIndex = pIndexes.pop(rendernode.id, None)
             if oldIndex:
-                self.changePersistentIndex(oldIndex, self.createIndex(rowNum, oldIndex.column(), row))
+                self.changePersistentIndex(oldIndex,
+                                           self.createIndex(rowNum,
+                                                            oldIndex.column(),
+                                                            rendernode))
         for _rnId, oldIndex in pIndexes.iteritems():
             self.changePersistentIndex(oldIndex, QModelIndex())
         self.layoutChanged.emit()
 
     def rowCount(self, parent):
-        return len(self.rows)
+        return len(self.rendernodes)
 
     def columnCount(self, parent):
         return RN_NUM_COLUMNS
@@ -77,41 +80,38 @@ class RenderNodeTableModel(QAbstractTableModel):
     def data(self, index, role):
         row = index.row()
         columnIndex = index.column()
-        columnName = RN_COL_NAMES[columnIndex]
-        rowData = self.rows[row]
-        data = rowData.get(RN_COL_DATA[columnIndex])
+        columnDataName = RN_COL_DATA[columnIndex]
+        rendernode = self.rendernodes[row]
         if role == Qt.TextAlignmentRole:
             return Qt.AlignCenter
         if role == Qt.DisplayRole:
             if role == Qt.DisplayRole:
-                if columnName == "Status":
-                    return RN_STATUS_NAMES[data]
-                if columnName == "RAM":
-                    return "{0} MB".format(data)
-                if columnName == "Free RAM":
-                    return "{0} MB".format(data)
-                elif columnName == "RAM Usage":
-                    total = float(rowData["systemFreeRam"])
-                    return max(min(100.0, (rowData["ramSize"] - total) / total * 100.0), 0.0)
+                if columnDataName == "status":
+                    return RN_STATUS_NAMES[rendernode.status]
+                if columnDataName == "ramSize":
+                    return "{0} MB".format(rendernode.ramSize)
+                if columnDataName == "systemFreeRam":
+                    return "{0} MB".format(rendernode.systemFreeRam)
+                elif columnDataName == "ramUsage":
+                    total = float(rendernode.systemFreeRam)
+                    return max(min(100.0, (rendernode.ramSize - total) / total * 100.0), 0.0)
                 else:
-                    return data
+                    return getattr(rendernode, columnDataName, None)
         if role == Qt.BackgroundRole:
-            if columnName == "Status":
-                return RN_STATUS_COLORS[data]
+            if columnDataName == "status":
+                return RN_STATUS_COLORS[rendernode.status]
         if role == Qt.UserRole:
-            return rowData
+            return rendernode
         if role == Qt.DecorationRole:
-            if columnName == "Image":
+            if columnDataName == "image":
                 return qApp.style().standardIcon(QStyle.SP_ComputerIcon)
-
         return None
 
     def flags(self, index):
-        columnName = RN_COL_NAMES[index.column()]
-        rowData = self.rows[index.row()]
-        if columnName == "Image":
-            status = rowData.get("status")
-            if status == RN_UNKNOWN:
+        columnName = RN_COL_DATA[index.column()]
+        if columnName == "image":
+            rendernode = self.rendernodes[index.row()]
+            if rendernode.status == RN_UNKNOWN:
                 return Qt.ItemIsSelectable
         return Qt.ItemIsEnabled | Qt.ItemIsSelectable
 

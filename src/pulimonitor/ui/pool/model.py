@@ -2,7 +2,7 @@
 from PyQt4.QtCore import QAbstractTableModel, Qt, QModelIndex
 from PyQt4.QtGui import QColor, QSortFilterProxyModel, QStyle, qApp
 
-from pulimonitor.network.requesthandler import getRequestHandler
+from pulimonitor.network.requesthandler import RequestHandler
 from octopus.core.enums.rendernode import RN_STATUS_NAMES
 
 
@@ -35,7 +35,7 @@ class PoolTableModel(QAbstractTableModel):
 
     def __init__(self, parent=None):
         QAbstractTableModel.__init__(self, parent)
-        self.requestHandler = getRequestHandler()
+        self.requestHandler = RequestHandler()
         self.requestHandler.poolsUpdated.connect(self.onDataUpdate)
         self.rows = []
 

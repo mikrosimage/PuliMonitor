@@ -8,7 +8,7 @@ from pulimonitor.ui.pool.edit import PoolEditDialog
 from pulimonitor.ui.pool.model import PoolTableProxyModel, PoolTableModel
 from pulimonitor.ui.pool.view import PoolTableView
 from pulimonitor.ui.searchlineedit import SearchLineEdit
-from pulimonitor.network.requesthandler import getRequestHandler
+from pulimonitor.network.requesthandler import RequestHandler
 
 
 class PoolPanel(QWidget):
@@ -53,7 +53,7 @@ class PoolPanel(QWidget):
                                       buttons=QMessageBox.Yes | QMessageBox.No,
                                       defaultButton=QMessageBox.No)
         if choice == QMessageBox.Yes:
-            rh = getRequestHandler()
+            rh = RequestHandler()
             for pool in poolsToDelete:
                 if not rh.deletePool(pool):
                     QMessageBox.critical(self, "Error", "Deleting pool %s failed!" % (pool))

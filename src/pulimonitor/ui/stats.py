@@ -6,7 +6,7 @@ Created on Jan 27, 2015
 '''
 from PyQt4.QtGui import QWidget, QLabel, QHBoxLayout, QApplication
 
-from pulimonitor.network.requesthandler import getRequestHandler
+from pulimonitor.network.requesthandler import RequestHandler
 from pulimonitor.ui.misc import VLine
 
 
@@ -20,7 +20,7 @@ class StatsWidget(QWidget):
         self.setLayout(self.mainLayout)
         self.statLabels = {}
         self.__firstVLine = True
-        self.rh = getRequestHandler()
+        self.rh = RequestHandler()
         self.rh.renderNodesStatsChanged
 
     def onStatsChanged(self, stats):

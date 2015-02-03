@@ -5,6 +5,8 @@ from PyQt4.QtGui import QApplication, qApp
 import requests
 
 from octopus.core.enums.rendernode import RN_STATUS_NAMES
+from puliclient.server.renderNodeHandler import RenderNodeHandler
+from puliclient.server.server import Server
 from pulimonitor.util.config import Config
 
 
@@ -12,20 +14,24 @@ requestHandler = None
 requestThread = None
 
 
-def getRequestHandler():
+def RequestHandler():
     global requestHandler
     global requestThread
     if not requestHandler:
         requestThread = QThread(qApp)
-        requestHandler = RequestHandler()
+        requestHandler = _RequestHandler()
         requestHandler.moveToThread(requestThread)
         requestThread.started.connect(requestHandler.start)
         requestThread.finished.connect(requestHandler.deleteLater)
-        requestThread.start()
     return requestHandler
 
 
-class RequestHandler(QObject):
+def startRequestThread():
+    global requestThread
+    requestThread.start()
+
+
+class _RequestHandler(QObject):
     '''
     A class handling the requests to the puli server. Results from the server
     are published via specific signals. For each type of request/listener
@@ -40,36 +46,29 @@ class RequestHandler(QObject):
     poolsUpdated = pyqtSignal(list)
 
     def __init__(self, parent=None):
-        super(RequestHandler, self).__init__(parent)
+        super(_RequestHandler, self).__init__(parent)
         self.log = logging.getLogger(__name__)
         self.config = Config(self)
         self.serversOnline = []
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.requestAll)
-        self.baseUrl = None
-        self.rnUrl = None
-        self.poolUrl = None
-        self.jobUrl = None
         self.__requestErrorLogged = False
 
     def onServerChanged(self, server):
         hostname, port = server
+        Server.setHostConnection(hostname, port)
         self.log.info("Server set to: {0}:{1}".format(hostname, port))
-        self.baseUrl = "http://{hostname}:{port}".format(hostname=hostname, port=port)
-        self.rnUrl = "{baseurl}/rendernodes".format(baseurl=self.baseUrl)
-        self.poolUrl = "{baseurl}/pools".format(baseurl=self.baseUrl)
-        self.jobUrl = "{baseurl}/tasks".format(baseurl=self.baseUrl)
 
-    def testServerConnectivity(self):
+    def testServers(self):
         '''
         This function tries to connect to the server configured in settings.ini
         :returns: list -- list of names of all offline servers
         '''
         offline = []
         for hostname, port in self.config.servers:
-            url = "http://{host}:{port}/pools".format(host=hostname, port=port)
+            self.onServerChanged((hostname, port))
             try:
-                requests.get(url)
+                Server.get("pools")
                 self.serversOnline.append((hostname, port))
             except:
                 offline.append(hostname)
@@ -94,30 +93,26 @@ class RequestHandler(QObject):
         Retrieves all render nodes from the server and publishes the data via the
         renderNodesUpdated signal.
         '''
-        if not self.rnUrl:
-            return
         self.log.debug("request render nodes")
+        rendernodes = []
         try:
-            r = requests.get(self.rnUrl)
+            rendernodes = RenderNodeHandler.getAllRenderNodes()
             self.__requestErrorLogged = False
         except:
             # log a request error only once
             if not self.__requestErrorLogged:
                 self.log.exception("Query all rendernodes request to server failed.")
                 return
-        if r.status_code == 200:
-            jsonData = r.json().get("rendernodes")
-            self.renderNodesUpdated.emit(jsonData)
-            stats = [("Total", len(jsonData))]
 
-            statusCounts = {}
-            for node in jsonData:
-                sn = RN_STATUS_NAMES[node.get("status")]
-                statusCounts[sn] = statusCounts.setdefault(sn, 0) + 1
-            stats += sorted(statusCounts.items())
-            self.renderNodesStatsChanged.emit(stats)
-        else:
-            self.log.error("Error querying for all rendernodes.")
+        self.renderNodesUpdated.emit(rendernodes)
+        stats = [("Total", len(rendernodes))]
+
+        statusCounts = {}
+        for rendernode in rendernodes:
+            statusName = RN_STATUS_NAMES[rendernode.status]
+            statusCounts[statusName] = statusCounts.setdefault(statusName, 0) + 1
+        stats += sorted(statusCounts.items())
+        self.renderNodesStatsChanged.emit(stats)
 
     def queryAllPools(self):
         '''
@@ -169,7 +164,7 @@ class RequestHandler(QObject):
         '''
         self.log.debug("request all")
         self.queryAllRenderNodes()
-        self.queryAllPools()
+#         self.queryAllPools()
 
     def addPool(self, name):
         self.log.debug("add pool " + name)
@@ -206,7 +201,7 @@ def main():
     import sys
     app = QApplication([])
     t = QThread()
-    rh = RequestHandler()
+    rh = _RequestHandler()
     rh.moveToThread(t)
     t.finished.connect(rh.deleteLater)
     sys.exit(app.exec_())

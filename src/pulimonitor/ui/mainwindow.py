@@ -4,7 +4,7 @@ from PyQt4.QtCore import Qt, QSettings, QByteArray
 from PyQt4.QtGui import QMainWindow, QTabWidget, QDockWidget, QToolBar, QAction, \
     QStyle, qApp
 
-from pulimonitor.network.requesthandler import getRequestHandler
+from pulimonitor.network.requesthandler import RequestHandler
 from pulimonitor.ui.about import dialog
 from pulimonitor.ui.job.panel import JobPanel
 from pulimonitor.ui.pool.panel import PoolPanel
@@ -24,10 +24,11 @@ class MainWindow(QMainWindow):
 
         # setup docks and rendernode panels
         self.setTabPosition(Qt.TopDockWidgetArea, QTabWidget.North)
-        self.addPoolsPanel()
+        self.addRenderNodePanel()
+#         self.addPoolsPanel()
 #         self.addJobPanel()
         self.restoreSettings()
-        self.requestHandler = getRequestHandler()
+        self.requestHandler = RequestHandler()
         self.requestHandler.start()
 
     def initActions(self):
@@ -35,7 +36,7 @@ class MainWindow(QMainWindow):
         Create and setup actions valid in the main window
         '''
         self.refreshAction = QAction(qApp.style().standardIcon(QStyle.SP_BrowserReload), "Refresh", self)
-        self.refreshAction.triggered.connect(getRequestHandler().requestAll)
+        self.refreshAction.triggered.connect(RequestHandler().requestAll)
 
         self.switchServerAction = QAction("Switch Servers", self)
         self.switchServerAction.triggered.connect(self.onSwitchServer)
