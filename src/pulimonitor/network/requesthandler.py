@@ -5,6 +5,7 @@ from PyQt4.QtGui import QApplication, qApp
 import requests
 
 from octopus.core.enums.rendernode import RN_STATUS_NAMES
+from puliclient.server.queueHandler import QueueHandler
 from puliclient.server.renderNodeHandler import RenderNodeHandler
 from puliclient.server.server import Server
 from pulimonitor.util.config import Config
@@ -68,6 +69,7 @@ class _RequestHandler(QObject):
         for hostname, port in self.config.servers:
             self.onServerChanged((hostname, port))
             try:
+                # TODO:replace this with a different call to the server
                 Server.get("pools")
                 self.serversOnline.append((hostname, port))
             except:
@@ -97,16 +99,11 @@ class _RequestHandler(QObject):
         rendernodes = []
         try:
             rendernodes = RenderNodeHandler.getAllRenderNodes()
-            self.__requestErrorLogged = False
         except:
-            # log a request error only once
-            if not self.__requestErrorLogged:
-                self.log.exception("Query all rendernodes request to server failed.")
-                return
+            self.timer.stop()
 
         self.renderNodesUpdated.emit(rendernodes)
         stats = [("Total", len(rendernodes))]
-
         statusCounts = {}
         for rendernode in rendernodes:
             statusName = RN_STATUS_NAMES[rendernode.status]
@@ -119,44 +116,24 @@ class _RequestHandler(QObject):
         Retrieves all render nodes from the server and publishes the data via the
         renderNodesUpdated signal.
         '''
-        if not self.poolUrl:
-            return
         self.log.debug("request pools")
         try:
-            r = requests.get(self.poolUrl)
-            self.__requestErrorLogged = False
+            # TODO: add api
+            pools = []
         except:
-            # log a request error only once
-            if not self.__requestErrorLogged:
-                self.log.exception("Query all pools request to server failed.")
-                return
-        if r.status_code == 200:
-            jsonData = r.json().get("pools", {}).values()
-            self.poolsUpdated.emit(jsonData)
-        else:
-            self.log.error("Error querying for all pools.")
+            self.timer.stop()
+        self.poolsUpdated.emit(pools)
 
     def queryAllJobs(self):
         '''
         Retrieves all render nodes from the server and publishes the data via the
         renderNodesUpdated signal.
         '''
-        if not self.jobUrl:
-            return
         self.log.debug("request jobs")
         try:
-            r = requests.get(self.jobUrl)
-            self.__requestErrorLogged = False
+            jobs = QueueHandler.getAllJobs(False)
         except:
-            # log a request error only once
-            if not self.__requestErrorLogged:
-                self.log.exception("Query all jobs request to server failed.")
-                return
-        if r.status_code == 200:
-            jsonData = r.json()
-            print jsonData
-        else:
-            self.log.error("Error querying for all jobs.")
+            self.timer.stop()
 
     def requestAll(self):
         '''
@@ -164,7 +141,7 @@ class _RequestHandler(QObject):
         '''
         self.log.debug("request all")
         self.queryAllRenderNodes()
-#         self.queryAllPools()
+        self.queryAllPools()
 
     def addPool(self, name):
         self.log.debug("add pool " + name)

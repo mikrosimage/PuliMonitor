@@ -1,9 +1,10 @@
 from PyQt4.QtCore import Qt
 from PyQt4.QtGui import QAbstractItemView, QMenu, QCursor
 
+from pulimonitor.ui.checkboxdelegate import CheckBoxDelegate
 from pulimonitor.ui.headerview import HeaderView
 from pulimonitor.ui.progressbardelegate import ProgressBarDelegate
-from pulimonitor.ui.rendernode.model import RN_COL_INIT_WIDTH, RN_COL_NAMES
+from pulimonitor.ui.rendernode.model import RN_COL_INIT_WIDTH, RN_COL_DATA
 from pulimonitor.ui.tableview import TableView
 
 
@@ -44,7 +45,11 @@ class RenderNodeTableView(TableView):
         self.horizontalHeader().setColumnsHidable(True)
         self.horizontalHeader().setMovable(True)
         self.verticalHeader().setVisible(False)
-        self.setItemDelegateForColumn(RN_COL_NAMES.index("RAM Usage"), ProgressBarDelegate())
+        self.setHorizontalScrollMode(TableView.ScrollPerPixel)
+        self.setVerticalScrollMode(TableView.ScrollPerPixel)
+        self.setItemDelegateForColumn(RN_COL_DATA.index("ramUsage"), ProgressBarDelegate(self))
+        self.setItemDelegateForColumn(RN_COL_DATA.index("systemSwapPercentage"), ProgressBarDelegate(self))
+        self.setItemDelegateForColumn(RN_COL_DATA.index("excluded"), CheckBoxDelegate(self))
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.onContextMenu)
 

@@ -16,6 +16,8 @@ from pulimonitor.ui.searchlineedit import SearchLineEdit
 from pulimonitor.util.config import Config
 from pulimonitor.util.user import currentUser
 
+# TODO: add splitter
+
 
 class RenderNodePanel(QWidget):
 
@@ -63,10 +65,9 @@ class RenderNodePanel(QWidget):
         '''
         rh = RequestHandler()
         for index in self.tableView.selectionModel().selectedRows():
-            rowData = index.data(Qt.UserRole)
-            name = rowData.get("name")
-            self.log.info("pausing " + name)
-            requests.put(rh.baseUrl + "/rendernodes/{name}/paused/".format(name=name),
+            rn = index.data(Qt.UserRole)
+            self.log.info("pausing " + rn.name)
+            requests.put(rh.baseUrl + "/rendernodes/{name}/paused/".format(name=rn.name),
                          data=json.dumps({"paused": True, "killproc": False}))
 
     def onUnpauseAction(self):
@@ -75,10 +76,9 @@ class RenderNodePanel(QWidget):
         '''
         rh = RequestHandler()
         for index in self.tableView.selectionModel().selectedRows():
-            rowData = index.data(Qt.UserRole)
-            name = rowData.get("name")
-            self.log.info("unpausing " + name)
-            requests.put(rh.baseUrl + "/rendernodes/{name}/paused/".format(name=name),
+            rn = index.data(Qt.UserRole)
+            self.log.info("unpausing " + rn.name)
+            requests.put(rh.baseUrl + "/rendernodes/{name}/paused/".format(name=rn.name),
                          data=json.dumps({"paused": False, "killproc": False}))
 
     def onXTermAction(self):
@@ -86,13 +86,11 @@ class RenderNodePanel(QWidget):
         Slot called once the XTerm action is triggered.
         '''
         for index in self.tableView.selectionModel().selectedRows():
-            rowData = index.data(Qt.UserRole)
-            hostname = rowData.get("host")
+            rn = index.data(Qt.UserRole)
             cu = currentUser().name
-            self.log.debug("opening xterm for user {0}@{1}".format(cu, hostname))
+            self.log.debug("opening xterm for user {0}@{1}".format(cu, rn.host))
             try:
-                subprocess.Popen(["xterm", "-e", "ssh",
-                                  "{0}@{1}".format(cu, hostname)])
+                subprocess.Popen(["xterm", "-e", "ssh", "{0}@{1}".format(cu, rn.host)])
             except:
                 msg = "Could not open xterm."
                 self.log.exception(msg)
@@ -104,9 +102,8 @@ class RenderNodePanel(QWidget):
         '''
         config = Config()
         for index in self.tableView.selectionModel().selectedRows():
-            rowData = index.data(Qt.UserRole)
-            hostname = rowData.get("host")
-            vncCommand = config.vncCommand.format(hostname=hostname)
+            rn = index.data(Qt.UserRole)
+            vncCommand = config.vncCommand.format(hostname=rn.host)
             self.log.debug("opening vnc with command: {0}".format(vncCommand))
             try:
                 subprocess.Popen(vncCommand, shell=True)

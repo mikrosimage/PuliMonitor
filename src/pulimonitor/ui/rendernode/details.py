@@ -2,6 +2,8 @@ from PyQt4.QtGui import QFormLayout, QApplication, QLineEdit, QGroupBox
 
 from pulimonitor.ui.rendernode.model import RN_COL_NAMES, RN_COL_DATA
 
+# TODO: make scrollable
+
 
 class RenderNodeDetails(QGroupBox):
 
@@ -14,10 +16,10 @@ class RenderNodeDetails(QGroupBox):
             self.dataWidgets[dataName] = lineedit
             layout.addRow(name, lineedit)
 
-    def refresh(self, row):
-        for key, value in row.iteritems():
-            if key in self.dataWidgets:
-                self.dataWidgets[key].setText(str(value))
+    def refresh(self, rendernode):
+        for dataName in RN_COL_DATA:
+            if dataName in self.dataWidgets:
+                self.dataWidgets[dataName].setText(str(getattr(rendernode, dataName, "")))
 
 
 def main():

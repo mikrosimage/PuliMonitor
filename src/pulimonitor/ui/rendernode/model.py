@@ -1,30 +1,25 @@
 
-from PyQt4.QtCore import QAbstractTableModel, Qt, QModelIndex
+from PyQt4.QtCore import QAbstractTableModel, Qt, QModelIndex, QDateTime
 from PyQt4.QtGui import QColor, QSortFilterProxyModel, QStyle, qApp
 
-from octopus.core.enums.rendernode import RN_STATUS_NAMES, RN_UNKNOWN
+from octopus.core.enums.rendernode import RN_STATUS_NAMES
 from pulimonitor.network.requesthandler import RequestHandler
 
 
-# TODO: add these columns
-# RENDERNODE_COLUMNS = {"Characteristics": u'caracteristics',
-#                       "Registered": u'isRegistered',
-#                       "Excluded": u'excluded',
-#                       "Speed": u'speed',
-#                       "Puli Version": u'puliversion',
-#                       "Creation Date": u'createDate',
-#                       "Port": u'port',
-#                       "Performance": u'performance',
-#                       "Last Time Available": u'lastAliveTime',
-#                       "Swap Percentage": u'systemSwapPercentage',
-#                       "Registration Date": u'registerDate'}
+RN_COL_NAMES = ("Image", "ID", "Name", "Host", "Port", "Status", "Commands",
+                "Pools", "Cores", "Cores Used", "Free Cores",
+                "RAM", "Free RAM", "RAM Usage", "Swap Percentage",
+                "Registred At", "Created At", "Last Time Alive", "Puli Version",
+                "Speed", "Performance", "Excluded", "Characteristics")
 
-RN_COL_NAMES = ("Image", "ID", "Name", "Host", "Status", "Commands", "Pools",
-                "Cores", "Cores Used", "Free Cores",
-                "RAM", "Free RAM", "RAM Usage")
-RN_COL_DATA = ("image", "id", "name", "host", "status", "commands", "pools",
-               "coresNumber", "usedCoresNumber", "freeCoresNumber",
-               "ramSize", "systemFreeRam", "ramUsage")
+
+RN_COL_DATA = ("image", "id", "name", "host", "port", "status", "commands",
+               "pools", "coresNumber", "usedCoresNumber", "freeCoresNumber",
+               "ramSize", "systemFreeRam", "ramUsage", "systemSwapPercentage",
+               "registerDate", "createDate", "lastAliveTime", "puliversion",
+               "speed", "performance", "excluded", "caracteristics")
+
+
 RN_COL_INIT_WIDTH = (25, 25, 100, 100, 75)
 
 RN_NUM_COLUMNS = len(RN_COL_DATA)
@@ -56,19 +51,17 @@ class RenderNodeTableModel(QAbstractTableModel):
         self.requestHandler.renderNodesUpdated.connect(self.onDataUpdate)
         self.rendernodes = []
 
-    def onDataUpdate(self, rendernodes):
+    def onDataUpdate(self, updatedRendernodes):
         self.layoutAboutToBeChanged.emit()
-        pIndexes = dict([(index.data(Qt.UserRole).id, index) for index in self.persistentIndexList()])
-        self.rendernodes = rendernodes
-        for rowNum, rendernode in enumerate(self.rendernodes):
-            oldIndex = pIndexes.pop(rendernode.id, None)
-            if oldIndex:
-                self.changePersistentIndex(oldIndex,
-                                           self.createIndex(rowNum,
-                                                            oldIndex.column(),
-                                                            rendernode))
-        for _rnId, oldIndex in pIndexes.iteritems():
-            self.changePersistentIndex(oldIndex, QModelIndex())
+        newRenderNodeIds = dict([(rn.id, (row, rn)) for row, rn in enumerate(updatedRendernodes)])
+        for oldIndex in self.persistentIndexList():
+            oldRendernode = oldIndex.data(Qt.UserRole)
+            try:
+                newRow, newRenderNode = newRenderNodeIds[oldRendernode.id]
+                self.changePersistentIndex(oldIndex, self.createIndex(newRow, oldIndex.column(), newRenderNode))
+            except KeyError:
+                self.changePersistentIndex(oldIndex, QModelIndex())
+        self.rendernodes = updatedRendernodes
         self.layoutChanged.emit()
 
     def rowCount(self, parent):
@@ -95,6 +88,12 @@ class RenderNodeTableModel(QAbstractTableModel):
                 elif columnDataName == "ramUsage":
                     total = float(rendernode.systemFreeRam)
                     return max(min(100.0, (rendernode.ramSize - total) / total * 100.0), 0.0)
+                elif columnDataName == "registerDate":
+                    return QDateTime.fromTime_t(int(rendernode.registerDate))
+                elif columnDataName == "createDate":
+                    return QDateTime.fromTime_t(int(rendernode.createDate))
+                elif columnDataName == "lastAliveTime":
+                    return QDateTime.fromTime_t(int(rendernode.lastAliveTime))
                 else:
                     return getattr(rendernode, columnDataName, None)
         if role == Qt.BackgroundRole:
@@ -108,11 +107,14 @@ class RenderNodeTableModel(QAbstractTableModel):
         return None
 
     def flags(self, index):
-        columnName = RN_COL_DATA[index.column()]
-        if columnName == "image":
-            rendernode = self.rendernodes[index.row()]
-            if rendernode.status == RN_UNKNOWN:
-                return Qt.ItemIsSelectable
+        # We cannot do this to show the computer icon disabled due to a Qt 4.x
+        # bug, which then makes the first column of the selected row
+        # unselected upon changeing persisten indexes/data updating
+        # columnName = RN_COL_DATA[index.column()]
+        # if columnName == "image":
+        #    rendernode = self.rendernodes[index.row()]
+        #    if rendernode.status == RN_UNKNOWN:
+        #        return Qt.ItemIsSelectable
         return Qt.ItemIsEnabled | Qt.ItemIsSelectable
 
     def headerData(self, section, orientation, role=Qt.DisplayRole):
