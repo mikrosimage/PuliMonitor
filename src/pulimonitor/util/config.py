@@ -17,7 +17,6 @@ class Config(QSettings):
         for k in keys:
             hostname, port = self.value(k).split(":")
             self.servers.append((hostname, int(port)))
-        print self.servers
         self.endGroup()
 
         self.beginGroup("General")

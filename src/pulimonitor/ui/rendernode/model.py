@@ -4,6 +4,7 @@ from PyQt4.QtGui import QColor, QSortFilterProxyModel, QStyle, qApp
 
 from octopus.core.enums.rendernode import RN_STATUS_NAMES
 from pulimonitor.network.requesthandler import RequestHandler
+from pulimonitor.ui.misc import dictToHtmlTable
 
 
 RN_COL_NAMES = ("Image", "ID", "Name", "Host", "Port", "Status", "Commands",
@@ -75,6 +76,9 @@ class RenderNodeTableModel(QAbstractTableModel):
         columnIndex = index.column()
         columnDataName = RN_COL_DATA[columnIndex]
         rendernode = self.rendernodes[row]
+        if role == Qt.ToolTipRole:
+            if columnDataName == "caracteristics":
+                return dictToHtmlTable(rendernode.caracteristics)
         if role == Qt.TextAlignmentRole:
             return Qt.AlignCenter
         if role == Qt.DisplayRole:
@@ -94,6 +98,8 @@ class RenderNodeTableModel(QAbstractTableModel):
                     return QDateTime.fromTime_t(int(rendernode.createDate))
                 elif columnDataName == "lastAliveTime":
                     return QDateTime.fromTime_t(int(rendernode.lastAliveTime))
+                elif columnDataName == "caracteristics":
+                    return str(rendernode.caracteristics)
                 else:
                     return getattr(rendernode, columnDataName, None)
         if role == Qt.BackgroundRole:
