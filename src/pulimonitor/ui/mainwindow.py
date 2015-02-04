@@ -99,12 +99,9 @@ class MainWindow(QMainWindow):
     def addRenderNodeDetailsPanel(self):
         focusWidget = QApplication.focusWidget()
         if isinstance(focusWidget, RenderNodeTableView):
-            dock = QDockWidget("rendernode details", self)
-            dock.setObjectName("rendernodedetails-dock-{0}".format(uuid4().hex))
-            rnDetails = RenderNodeDetails(dock)
-            focusWidget.selectedRendernodesChanged.connect(rnDetails.refresh)
-            dock.setWidget(rnDetails)
-            self.addDockWidget(Qt.TopDockWidgetArea, dock)
+            rnDetails = RenderNodeDetails(self)
+            focusWidget.selectedRendernodesChanged.connect(rnDetails.onRendernodeChanged)
+            self.addDockWidget(Qt.TopDockWidgetArea, rnDetails)
         else:
             QMessageBox.information(self, "Rendernodes", "Please focus a"
                                     " rendernode view to attach to.")

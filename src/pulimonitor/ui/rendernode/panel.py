@@ -15,8 +15,6 @@ from pulimonitor.ui.searchlineedit import SearchLineEdit
 from pulimonitor.util.config import Config
 from pulimonitor.util.user import currentUser
 
-# TODO: add splitter
-
 
 class RenderNodePanel(QWidget):
 
