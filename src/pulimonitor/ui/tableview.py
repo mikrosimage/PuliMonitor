@@ -43,18 +43,18 @@ class TableView(QTableView):
         '''
         QTableView.setModel(self, *args, **kwargs)
         self.horizontalHeader().applySectionSettings()
-        self.selectionModel().selectionChanged.connect(self.onSelectionChanged)
 
-    def onSelectionChanged(self, selected, deselected):
+    def selectionChanged(self, selected, deselected):
         '''
-        Signal called when the views selection changes. Iterates over all
-        Actions registered with this view to update their 'enabled' status
-        depending on the current selection.
+        Reimplemented slot called when the views selection changes. Iterates
+        over all Actions registered with this view to update their 'enabled'
+        status depending on the current selection.
         :param selected: selected items
         :type selected: QItemSelection
         :param deselected: deselected items
         :type deselected: QItemSelection
         '''
+        super(TableView, self).selectionChanged(selected, deselected)
         hasSelection = self.selectionModel().hasSelection()
         for action in self.actions():
             action.setEnabledOnSelectionChange(hasSelection)

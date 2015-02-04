@@ -16,10 +16,12 @@ class RenderNodeDetails(QGroupBox):
             self.dataWidgets[dataName] = lineedit
             layout.addRow(name, lineedit)
 
-    def refresh(self, rendernode):
-        for dataName in RN_COL_DATA:
-            if dataName in self.dataWidgets:
-                self.dataWidgets[dataName].setText(str(getattr(rendernode, dataName, "")))
+    def refresh(self, rendernodes):
+        for rendernode in rendernodes:
+            for dataName in RN_COL_DATA:
+                if dataName in self.dataWidgets:
+                    self.dataWidgets[dataName].setText(str(getattr(rendernode, dataName, "")))
+            break
 
 
 def main():

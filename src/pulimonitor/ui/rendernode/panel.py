@@ -8,7 +8,6 @@ import requests
 
 from pulimonitor.network.requesthandler import RequestHandler
 from pulimonitor.ui.action import Action
-from pulimonitor.ui.rendernode.details import RenderNodeDetails
 from pulimonitor.ui.rendernode.model import RenderNodeTableProxyModel, RenderNodeTableModel
 from pulimonitor.ui.rendernode.stats import RenderNodeStatsWidget
 from pulimonitor.ui.rendernode.view import RenderNodeTableView
@@ -41,23 +40,7 @@ class RenderNodePanel(QWidget):
         self.mainLayout.addLayout(searchLayout)
         self.mainLayout.addWidget(self.tableView)
         self.mainLayout.addWidget(self.statsWidget)
-        self.renderNodeDetails = RenderNodeDetails(self)
-        self.mainLayout.addWidget(self.renderNodeDetails)
-        self.tableView.selectionModel().selectionChanged.connect(self._selectionChanged)
         self.setupActions()
-
-    def _selectionChanged(self, selected, deselected):
-        '''
-        Slot called when the render nodes view table selection changes,
-        notifying dependent widgets.
-        :param selected: selected items
-        :type selected: QItemSelection
-        :param deselected: deselected items
-        :type deselected: QItemSelection
-        '''
-        for index in selected.indexes():
-            self.renderNodeDetails.refresh(index.data(Qt.UserRole))
-            return
 
     def onPauseAction(self):
         '''

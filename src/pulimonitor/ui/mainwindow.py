@@ -2,7 +2,7 @@ from uuid import uuid4
 
 from PyQt4.QtCore import Qt, QSettings, QByteArray
 from PyQt4.QtGui import QMainWindow, QTabWidget, QDockWidget, QToolBar, QAction, \
-    QStyle, qApp
+    QStyle, qApp, QApplication, QMessageBox
 
 from pulimonitor.network.requesthandler import RequestHandler
 from pulimonitor.ui.about import dialog
@@ -10,6 +10,8 @@ from pulimonitor.ui.job.panel import JobPanel
 from pulimonitor.ui.pool.panel import PoolPanel
 from pulimonitor.ui.rendernode.panel import RenderNodePanel
 from pulimonitor.ui.serverswitch import ServerSwitchDialog
+from pulimonitor.ui.rendernode.details import RenderNodeDetails
+from pulimonitor.ui.rendernode.view import RenderNodeTableView
 
 
 class MainWindow(QMainWindow):
@@ -48,6 +50,8 @@ class MainWindow(QMainWindow):
 
         self.addRenderNodePanelAction = QAction("Rendernodes", self)
         self.addRenderNodePanelAction.triggered.connect(self.addRenderNodePanel)
+        self.addRenderNodeDetailsPanelAction = QAction("Rendernode Details", self)
+        self.addRenderNodeDetailsPanelAction.triggered.connect(self.addRenderNodeDetailsPanel)
 
         self.addPoolPanelAction = QAction("Pools", self)
         self.addPoolPanelAction.triggered.connect(self.addPoolsPanel)
@@ -68,6 +72,7 @@ class MainWindow(QMainWindow):
         windowMenu = menubar.addMenu('&Window')
         panelsMenu = windowMenu.addMenu("Panels")
         panelsMenu.addAction(self.addRenderNodePanelAction)
+        panelsMenu.addAction(self.addRenderNodeDetailsPanelAction)
         panelsMenu.addAction(self.addPoolPanelAction)
         helpMenu = menubar.addMenu('&Help')
         helpMenu.addAction(self.aboutAction)
@@ -86,17 +91,30 @@ class MainWindow(QMainWindow):
         Add a render node panel to the main window. All views on the panels
         share one data model.
         '''
-        dock = QDockWidget("Rendernodes", self)
+        dock = QDockWidget("rendernodes", self)
         dock.setObjectName("rendernodes-dock-{0}".format(uuid4().hex))
         dock.setWidget(RenderNodePanel(dock))
         self.addDockWidget(Qt.TopDockWidgetArea, dock)
+
+    def addRenderNodeDetailsPanel(self):
+        focusWidget = QApplication.focusWidget()
+        if isinstance(focusWidget, RenderNodeTableView):
+            dock = QDockWidget("rendernode details", self)
+            dock.setObjectName("rendernodedetails-dock-{0}".format(uuid4().hex))
+            rnDetails = RenderNodeDetails(dock)
+            focusWidget.selectedRendernodesChanged.connect(rnDetails.refresh)
+            dock.setWidget(rnDetails)
+            self.addDockWidget(Qt.TopDockWidgetArea, dock)
+        else:
+            QMessageBox.information(self, "Rendernodes", "Please focus a"
+                                    " rendernode view to attach to.")
 
     def addPoolsPanel(self):
         '''
         Add a pool panel to the main window. All views on the panels
         share one data model.
         '''
-        dock = QDockWidget("Pools", self)
+        dock = QDockWidget("pools", self)
         dock.setObjectName("pools-dock-{0}".format(uuid4().hex))
         poolPanel = PoolPanel(dock)
         dock.setWidget(poolPanel)
@@ -107,7 +125,7 @@ class MainWindow(QMainWindow):
         Add a job panel to the main window. All views on the panels
         share one data model.
         '''
-        dock = QDockWidget("Jobs", self)
+        dock = QDockWidget("jobs", self)
         dock.setObjectName("jobs-dock-{0}".format(uuid4().hex))
         jobPanel = JobPanel(dock)
         dock.setWidget(jobPanel)
