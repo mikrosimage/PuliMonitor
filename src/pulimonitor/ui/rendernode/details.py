@@ -4,10 +4,12 @@ from PyQt4.QtGui import QFormLayout, QApplication, QLineEdit, QScrollArea, QDock
 from pulimonitor.ui.rendernode.model import RN_COL_NAMES, RN_COL_DATA
 from uuid import uuid4
 
+# TODO: investigate usage of QDataWidgetMapper
+
 
 class RenderNodeDetails(QDockWidget):
 
-    def __init__(self, parent=None):
+    def __init__(self, model, parent=None):
         super(RenderNodeDetails, self).__init__("rendernode details", parent)
         self.setObjectName("rendernodedetails-dock-{0}".format(uuid4().hex))
         scrollArea = QScrollArea(self)

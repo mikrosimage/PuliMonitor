@@ -66,14 +66,16 @@ class RenderNodePanel(QWidget):
         '''
         Slot called once the XTerm action is triggered.
         '''
+        config = Config()
         for index in self.tableView.selectionModel().selectedRows():
             rn = index.data(Qt.UserRole)
             cu = currentUser().name
-            self.log.debug("opening xterm for user {0}@{1}".format(cu, rn.host))
+            sshCommand = config.get("SSH-Terminal", "ssh_command").format(cu, rn.host)
             try:
-                subprocess.Popen(["xterm", "-e", "ssh", "{0}@{1}".format(cu, rn.host)])
+                self.log.debug("opening terminal with command: " + sshCommand)
+                subprocess.Popen(sshCommand)
             except:
-                msg = "Could not open xterm."
+                msg = "Could not open terminal."
                 self.log.exception(msg)
                 QMessageBox.critical(None, "Error", msg)
 
@@ -84,7 +86,7 @@ class RenderNodePanel(QWidget):
         config = Config()
         for index in self.tableView.selectionModel().selectedRows():
             rn = index.data(Qt.UserRole)
-            vncCommand = config.vncCommand.format(hostname=rn.host)
+            vncCommand = config.get("VNC", "vnc_command").format(hostname=rn.host)
             self.log.debug("opening vnc with command: {0}".format(vncCommand))
             try:
                 subprocess.Popen(vncCommand, shell=True)

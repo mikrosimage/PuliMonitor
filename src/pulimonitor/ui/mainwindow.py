@@ -101,7 +101,7 @@ class MainWindow(QMainWindow):
         if isinstance(focusWidget, RenderNodeTableView):
             rnDetails = RenderNodeDetails(self)
             focusWidget.selectedRendernodesChanged.connect(rnDetails.onRendernodeChanged)
-            self.addDockWidget(Qt.TopDockWidgetArea, rnDetails)
+            self.addDockWidget(Qt.BottomDockWidgetArea, rnDetails)
         else:
             QMessageBox.information(self, "Rendernodes", "Please focus a"
                                     " rendernode view to attach to.")

@@ -12,7 +12,7 @@ def testServerConnectivity():
     '''
     config = Config()
     connectivity = defaultdict(list)
-    for hostname, port in config.servers:
+    for hostname, port in config.items("Servers"):
         url = "http://{host}:{port}/pools".format(host=hostname, port=port)
         try:
             requests.get(url)

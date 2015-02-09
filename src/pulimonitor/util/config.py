@@ -1,36 +1,26 @@
-from PyQt4.QtCore import QSettings
-
 from pulimonitor.util.path import GENERAL_CONFIG_PATH
+from ConfigParser import ConfigParser
 
 
-class Config(QSettings):
+class Config(ConfigParser, object):
     '''
-    QSettings subclass that allows to conveniently access/write settings.
+    ConfigParser subclass that allows to conveniently access/write settings.
     '''
 
-    def __init__(self, parent=None):
-        QSettings.__init__(self, GENERAL_CONFIG_PATH, QSettings.IniFormat, parent)
+    def __init__(self):
+        ConfigParser.__init__(self)
+        self.read(GENERAL_CONFIG_PATH)
 
-        self.servers = []
-        self.beginGroup("Servers")
-        keys = self.allKeys()
-        for k in keys:
-            hostname, port = self.value(k).split(":")
-            self.servers.append((hostname, int(port)))
-        self.endGroup()
-
-        self.beginGroup("General")
-        self.refreshInterval = self.value("refresh_interval", 3, int) * 1000
-        self.endGroup()
-
-        self.beginGroup("VNC")
-        self.vncCommand = self.value("vnc_command", "vncviewer {hostname}", str)
-        self.endGroup()
+    def items(self, section, raw=False, vars=None):
+        if section == "Servers":
+            items = super(Config, self).items(section, raw, vars)
+            servers = []
+            for _, value in items:
+                hostname, port = value.split(":")
+                servers.append((hostname, int(port)))
+            return servers
+        return ConfigParser.items(self, section, raw=raw, vars=vars)
 
 
 if __name__ == '__main__':
-    import sys
-    from PyQt4.QtGui import QApplication
-    app = QApplication([])
     c = Config()
-    sys.exit(app.exec_())

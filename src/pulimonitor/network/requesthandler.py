@@ -49,7 +49,7 @@ class _RequestHandler(QObject):
     def __init__(self, parent=None):
         super(_RequestHandler, self).__init__(parent)
         self.log = logging.getLogger(__name__)
-        self.config = Config(self)
+        self.config = Config()
         self.serversOnline = []
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.requestAll)
@@ -66,7 +66,7 @@ class _RequestHandler(QObject):
         :returns: list -- list of names of all offline servers
         '''
         offline = []
-        for hostname, port in self.config.servers:
+        for hostname, port in self.config.items("Servers"):
             self.onServerChanged((hostname, port))
             try:
                 # TODO:replace this with a different call to the server
@@ -81,7 +81,7 @@ class _RequestHandler(QObject):
     def start(self):
         self.log.debug("started")
         self.requestAll()
-        self.timer.start(self.config.refreshInterval)
+        self.timer.start(self.config.getint("General", "refresh_interval",))
 
     def stop(self):
         self.log.debug("stopped")
