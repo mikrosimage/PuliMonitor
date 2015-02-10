@@ -17,3 +17,5 @@ def commands():
 
     # Need to prepend the package root to make package version accessible (and not overidden by other packages like tornado)
     env.PYTHONPATH.append('{root}/src')
+
+    alias('puliMonitor', 'python {root}/src/main.py')
