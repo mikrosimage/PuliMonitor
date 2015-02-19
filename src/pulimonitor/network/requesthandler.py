@@ -81,7 +81,7 @@ class _RequestHandler(QObject):
     def start(self):
         self.log.debug("started")
         self.requestAll()
-        self.timer.start(self.config.getint("General", "refresh_interval",))
+        self.timer.start(self.config.getint("General", "refresh_interval") * 1000)
 
     def stop(self):
         self.log.debug("stopped")
