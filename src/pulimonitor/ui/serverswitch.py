@@ -33,8 +33,12 @@ class ServerSwitchDialog(QDialog):
 
     def addServers(self):
         rh = RequestHandler()
-        for hostname, port in rh.serversOnline:
-            self.serverComboBox.addItem(hostname, (hostname, port))
+        m = self.serverComboBox.model()
+        for i, server in enumerate(rh.servers):
+            self.serverComboBox.addItem(server.host, server)
+            if not server.online:
+                item = m.item(i)
+                item.setFlags(Qt.NoItemFlags)
 
     def onCurrentServerChanged(self, data):
         idx = self.serverComboBox.currentIndex()

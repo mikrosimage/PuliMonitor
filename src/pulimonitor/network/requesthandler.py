@@ -1,6 +1,6 @@
 import logging
 
-from PyQt4.QtCore import QObject, pyqtSignal, QTimer, QThread
+from PyQt4.QtCore import QObject, pyqtSignal, QTimer, QThread, QSettings
 from PyQt4.QtGui import QApplication, qApp
 import requests
 
@@ -45,38 +45,60 @@ class _RequestHandler(QObject):
     renderNodesUpdated = pyqtSignal(list)
     renderNodesStatsChanged = pyqtSignal(list)
     poolsUpdated = pyqtSignal(list)
+    jobsUpdated = pyqtSignal(list)
 
     def __init__(self, parent=None):
         super(_RequestHandler, self).__init__(parent)
         self.log = logging.getLogger(__name__)
         self.config = Config()
-        self.serversOnline = []
+        self.servers = []
+        self.currentServer = None
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.requestAll)
         self.__requestErrorLogged = False
+        self.renderNodeHandler = None
+        self.poolHandler = None
+        self.queueHandler = None
+
+    def loadSettings(self):
+        settings = QSettings()
+        settings.beginGroup("requesthandler")
+        lastServer = int(settings.value("last_server", 0))
+        try:
+            self.currentServer = self.servers[lastServer]
+            self.log.info("Current server is %s" % self.currentServer)
+        except IndexError:
+            pass
+        settings.endGroup()
 
     def onServerChanged(self, server):
-        hostname, port = server
-        Server.setHostConnection(hostname, port)
-        self.log.info("Server set to: {0}:{1}".format(hostname, port))
+        self.renderNodeHandler.setServer(server)
+#         self.poolHandler.setServer(server)
+#         self.queueHandler.setServer(server)
+        self.log.info("Server set to: %s" % server)
 
-    def testServers(self):
+    def loadServers(self):
+        for hostname, port in self.config.items("Servers"):
+            server = Server(hostname, port)
+            server.online = False
+            self.servers.append(server)
+
+    def challengeServers(self):
         '''
         This function tries to connect to the server configured in settings.ini
         :returns: list -- list of names of all offline servers
         '''
-        offline = []
-        for hostname, port in self.config.items("Servers"):
-            self.onServerChanged((hostname, port))
+        for server in self.servers:
             try:
                 # TODO:replace this with a different call to the server
-                Server.get("pools")
-                self.serversOnline.append((hostname, port))
+                server.get("pools")
+                server.online = True
+                self.log.info("%s is online" % server)
             except:
-                offline.append(hostname)
-        if self.serversOnline:
-            self.onServerChanged(self.serversOnline[0])
-        return offline
+                self.log.info("%s is offline" % server)
+
+    def offlineServers(self):
+        return [s for s in self.servers if not s.online]
 
     def start(self):
         self.log.debug("started")
@@ -96,9 +118,16 @@ class _RequestHandler(QObject):
         renderNodesUpdated signal.
         '''
         self.log.debug("request render nodes")
-        rendernodes = []
+
+        if not self.renderNodeHandler:
+            if self.currentServer:
+                self.renderNodeHandler = RenderNodeHandler(self.currentServer)
+            else:
+                return
+
+        rendernodes = ()
         try:
-            rendernodes = RenderNodeHandler.getAllRenderNodes()
+            rendernodes = self.renderNodeHandler.getAllRenderNodes()[0]
         except:
             self.timer.stop()
 
@@ -117,11 +146,16 @@ class _RequestHandler(QObject):
         renderNodesUpdated signal.
         '''
         self.log.debug("request pools")
+
+        if not self.poolHandler:
+            self.poolHandler = None
+
+        pools = []
         try:
-            # TODO: add api
             pools = []
         except:
             self.timer.stop()
+
         self.poolsUpdated.emit(pools)
 
     def queryAllJobs(self):
@@ -130,10 +164,15 @@ class _RequestHandler(QObject):
         renderNodesUpdated signal.
         '''
         self.log.debug("request jobs")
+        if not self.queueHandler:
+            self.queueHandler = QueueHandler()
+
+        jobs = []
         try:
-            jobs = QueueHandler.getAllJobs(False)
+            jobs = self.queueHandler.getAllJobs(False)
         except:
             self.timer.stop()
+        self.jobsUpdated.emit(jobs)
 
     def requestAll(self):
         '''
@@ -141,7 +180,7 @@ class _RequestHandler(QObject):
         '''
         self.log.debug("request all")
         self.queryAllRenderNodes()
-        self.queryAllPools()
+        # self.queryAllPools()
 
     def addPool(self, name):
         self.log.debug("add pool " + name)

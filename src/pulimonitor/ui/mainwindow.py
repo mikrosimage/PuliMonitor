@@ -156,7 +156,7 @@ class MainWindow(QMainWindow):
         This method also notifies child widgets to save their settings.
         '''
         settings = QSettings()
-        settings.beginGroup(self.__class__.__name__)
+        settings.beginGroup("mainwindow")
         settings.setValue("geometry", self.saveGeometry())
         settings.setValue("state", self.saveState())
         settings.endGroup()

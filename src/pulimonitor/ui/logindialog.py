@@ -29,7 +29,7 @@ class LoginDialog(QDialog):
         """
         QDialog.__init__(self, parent)
         settings = QSettings()
-        settings.beginGroup(self.__class__.__name__)
+        settings.beginGroup("logindialog")
         self.restoreGeometry(settings.value("geometry", QByteArray()))
         settings.endGroup()
 

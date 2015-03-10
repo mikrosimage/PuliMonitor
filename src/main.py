@@ -50,13 +50,15 @@ def main():
 
     # Test connectivity and dont start if server is not reachable
     rh = RequestHandler()
-    offlineServers = rh.testServers()
-    if offlineServers:
-        QMessageBox.critical(None, "Error", "Connecting to the servers:\n"
-                                            "%s\n"
+    rh.loadServers()
+    rh.challengeServers()
+    rh.loadSettings()
+    offline = rh.offlineServers()
+    if offline:
+        QMessageBox.critical(None, "Error", "Connecting to the servers: %s "
                                             "defined in settings.ini "
                                             "failed! These server will be "
-                                            "ignored" % ("\n".join(offlineServers)))
+                                            "ignored" % ("\,".join([s.host for s in offline])))
     startRequestThread()
 
     # prompt for login
