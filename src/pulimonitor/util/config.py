@@ -2,6 +2,17 @@ from pulimonitor.util.path import GENERAL_CONFIG_PATH
 from ConfigParser import ConfigParser
 
 
+def get(refresh=False):
+    if refresh:
+        get.config = None
+    if get.config:
+        return get.config
+    get.config = Config()
+    return get.config
+
+get.config = None
+
+
 class Config(ConfigParser, object):
     '''
     ConfigParser subclass that allows to conveniently access/write settings.

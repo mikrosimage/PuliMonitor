@@ -8,7 +8,7 @@ from octopus.core.enums.rendernode import RN_STATUS_NAMES
 from puliclient.server.queueHandler import QueueHandler
 from puliclient.server.renderNodeHandler import RenderNodeHandler
 from puliclient.server.server import Server
-from pulimonitor.util.config import Config
+from pulimonitor.util import config
 
 
 requestHandler = None
@@ -50,7 +50,7 @@ class _RequestHandler(QObject):
     def __init__(self, parent=None):
         super(_RequestHandler, self).__init__(parent)
         self.log = logging.getLogger(__name__)
-        self.config = Config()
+        self.config = config.get()
         self.servers = []
         self.currentServer = None
         self.timer = QTimer(self)

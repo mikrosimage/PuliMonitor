@@ -2,7 +2,6 @@ from PyQt4.QtCore import Qt
 from PyQt4.QtGui import QAbstractItemView, QMenu, QCursor, QTreeView
 
 from pulimonitor.ui.headerview import HeaderView
-from pulimonitor.ui.rendernode.model import RN_COL_INIT_WIDTH
 
 
 class JobHeaderView(HeaderView):
@@ -12,7 +11,7 @@ class JobHeaderView(HeaderView):
     '''
 
     def sectionSizes(self):
-        return RN_COL_INIT_WIDTH
+        return []
 
     def sectionResizeModes(self):
         return HeaderView.sectionResizeModes(self)

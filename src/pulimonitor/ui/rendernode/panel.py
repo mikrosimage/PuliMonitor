@@ -8,11 +8,12 @@ import requests
 
 from pulimonitor.network.requesthandler import RequestHandler
 from pulimonitor.ui.action import Action
-from pulimonitor.ui.rendernode.model import RenderNodeTableProxyModel, RenderNodeTableModel
 from pulimonitor.ui.rendernode.stats import RenderNodeStatsWidget
-from pulimonitor.ui.rendernode.view import RenderNodeTableView
+from pulimonitor.ui.rendernode.treemodel import RenderNodeModel, \
+    RenderNodeProxyModel
+from pulimonitor.ui.rendernode.treeview import RenderNodeTreeView
 from pulimonitor.ui.searchlineedit import SearchLineEdit
-from pulimonitor.util.config import Config
+from pulimonitor.util import config
 from pulimonitor.util.user import currentUser
 
 
@@ -28,15 +29,15 @@ class RenderNodePanel(QWidget):
         self.searchLineEdit = SearchLineEdit(self)
         searchLayout = QHBoxLayout()
         searchLayout.addWidget(self.searchLineEdit)
-        self.tableView = RenderNodeTableView(self)
+        self.treeView = RenderNodeTreeView(self)
         self.statsWidget = RenderNodeStatsWidget(self)
         if RenderNodePanel.sourceModel is None:
-            RenderNodePanel.sourceModel = RenderNodeTableModel(qApp)
-        self.tableModel = RenderNodeTableProxyModel(RenderNodePanel.sourceModel, self)
-        self.searchLineEdit.setModel(self.tableModel)
-        self.tableView.setModel(self.tableModel)
+            RenderNodePanel.sourceModel = RenderNodeModel(qApp)
+        self.treeModel = RenderNodeProxyModel(RenderNodePanel.sourceModel, self)
+        self.searchLineEdit.setModel(self.treeModel)
+        self.treeView.setModel(self.treeModel)
         self.mainLayout.addLayout(searchLayout)
-        self.mainLayout.addWidget(self.tableView)
+        self.mainLayout.addWidget(self.treeView)
         self.mainLayout.addWidget(self.statsWidget)
         self.setupActions()
 
@@ -45,7 +46,7 @@ class RenderNodePanel(QWidget):
         Slot called once the pause action is triggered
         '''
         rh = RequestHandler()
-        for index in self.tableView.selectionModel().selectedRows():
+        for index in self.treeView.selectionModel().selectedRows():
             rn = index.data(Qt.UserRole)
             self.log.info("pausing " + rn.name)
             requests.put(rh.baseUrl + "/rendernodes/{name}/paused/".format(name=rn.name),
@@ -56,7 +57,7 @@ class RenderNodePanel(QWidget):
         Slot called once the pause action is triggered
         '''
         rh = RequestHandler()
-        for index in self.tableView.selectionModel().selectedRows():
+        for index in self.treeView.selectionModel().selectedRows():
             rn = index.data(Qt.UserRole)
             self.log.info("unpausing " + rn.name)
             requests.put(rh.baseUrl + "/rendernodes/{name}/paused/".format(name=rn.name),
@@ -66,11 +67,11 @@ class RenderNodePanel(QWidget):
         '''
         Slot called once the XTerm action is triggered.
         '''
-        config = Config()
-        for index in self.tableView.selectionModel().selectedRows():
+        cmdTemplate = config.get().get("SSH-Terminal", "ssh_command")
+        for index in self.treeView.selectionModel().selectedRows():
             rn = index.data(Qt.UserRole)
             cu = currentUser().name
-            sshCommand = config.get("SSH-Terminal", "ssh_command").format(cu, rn.host)
+            sshCommand = cmdTemplate.format(cu, rn.host)
             try:
                 self.log.debug("opening terminal with command: " + sshCommand)
                 subprocess.Popen(sshCommand)
@@ -83,10 +84,10 @@ class RenderNodePanel(QWidget):
         '''
         Slot called once the Show VNC action is triggered.
         '''
-        config = Config()
-        for index in self.tableView.selectionModel().selectedRows():
+        cmdTemplate = config.get().get("VNC", "vnc_command")
+        for index in self.treeView.selectionModel().selectedRows():
             rn = index.data(Qt.UserRole)
-            vncCommand = config.get("VNC", "vnc_command").format(hostname=rn.host)
+            vncCommand = cmdTemplate.format(hostname=rn.host)
             self.log.debug("opening vnc with command: {0}".format(vncCommand))
             try:
                 subprocess.Popen(vncCommand, shell=True)
@@ -98,7 +99,7 @@ class RenderNodePanel(QWidget):
     def __addAction(self, text, aId, selectionSensitive):
         a = Action(text, "Rendernode", aId, selectionSensitive, self)
         self.addAction(a)
-        self.tableView.addAction(a)
+        self.treeView.addAction(a)
         return a
 
     def setupActions(self):

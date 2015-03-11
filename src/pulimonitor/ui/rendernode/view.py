@@ -4,7 +4,7 @@ from PyQt4.QtGui import QAbstractItemView, QMenu, QCursor
 from pulimonitor.ui.checkboxdelegate import CheckBoxDelegate
 from pulimonitor.ui.headerview import HeaderView
 from pulimonitor.ui.progressbardelegate import ProgressBarDelegate
-from pulimonitor.ui.rendernode.model import RN_COL_INIT_WIDTH, RN_COL_DATA
+from pulimonitor.ui.rendernode.treemodel import RN_COL_INIT_WIDTH, RN_COL_DATA
 from pulimonitor.ui.tableview import TableView
 
 

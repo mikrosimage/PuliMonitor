@@ -1,45 +1,45 @@
+from PyQt4.QtCore import Qt
 
 
 class TreeItem(object):
 
     def __init__(self, data, parent):
         self.parent = parent
-        self.data = data
+        self._data = data
         self.childItems = []
-        self.childItemLookup = {}
+        self._childCount = 0
+        self._row = 0
         if parent:
             self.parent.appendChild(self)
 
-    def findChild(self, key):
-        return self.childItemLookup.get(key)
+    def flags(self, index):
+        return Qt.ItemIsEnabled | Qt.ItemIsSelectable
 
     def appendChild(self, item):
-        self.childItemLookup[item.data["id"]] = item
+        item._row = self._childCount
+        self._childCount += 1
         self.childItems.append(item)
 
     def child(self, row):
         return self.childItems[row]
 
     def childCount(self):
-        print len(self.childItems)
-        return len(self.childItems)
+        return self._childCount
 
     def row(self):
-        if self.parent:
-            return self.parent.childItems.index(self)
-        return 0
-
-    def isRoot(self):
-        return self.parent is None
+        return self._row
 
     def deleteChild(self, row):
         del self.childItems[row]
-        del self.childItemLookup[self.childItems[row]["id"]]
 
     def __repr__(self, *args, **kwargs):
-        return "%s(%s)" % (self.__class__.__name__, repr(self.data))
+        return "%s(%s)" % (self.__class__.__name__, repr(self._data)) + str(self.parent)
+
+    def dump(self, indent=""):
+        print indent + str(self)
+        for c in self.childItems:
+            c.dump(indent + "    ")
 
     def delete(self):
         self.parent.childItems.remove(self)
-        del self.parent.childItemLookup[self.data["id"]]
         self.parent = None

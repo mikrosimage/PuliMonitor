@@ -8,6 +8,7 @@ class TreeModel(QAbstractItemModel):
     def __init__(self, parent=None):
         super(TreeModel, self).__init__(parent)
         self.columns = []
+        self.__columnCount = 0
         self.rootItem = TreeItem(None, None)
 
     def setColumns(self, columns):
@@ -24,9 +25,10 @@ class TreeModel(QAbstractItemModel):
         return item.data(index, role)
 
     def flags(self, index):
-        if not index.isValid():
-            return Qt.NoItemFlags
-        return Qt.ItemIsEnabled | Qt.ItemIsSelectable
+        if index.isValid():
+            item = index.internalPointer()
+            return item.flags(index)
+        return Qt.NoItemFlags
 
     def headerData(self, section, orientation, role):
         if orientation == Qt.Horizontal and role == Qt.DisplayRole:
@@ -56,7 +58,7 @@ class TreeModel(QAbstractItemModel):
         return self.createIndex(parentItem.row(), 0, parentItem)
 
     def rowCount(self, parent):
-        if parent.column():
+        if parent.column() > 0:
             return 0
         if not parent.isValid():
             parentItem = self.rootItem

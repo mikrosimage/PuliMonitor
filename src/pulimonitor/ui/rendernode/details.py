@@ -1,12 +1,12 @@
+from uuid import uuid4
+
 from PyQt4.QtGui import QFormLayout, QApplication, QLineEdit, QScrollArea, QDockWidget, \
     QWidget
 
-from pulimonitor.ui.rendernode.model import RN_COL_NAMES, RN_COL_DATA
-from uuid import uuid4
+from pulimonitor.ui.rendernode.treemodel import RN_COL_NAMES, RN_COL_DATA
+
 
 # TODO: investigate usage of QDataWidgetMapper
-
-
 class RenderNodeDetails(QDockWidget):
 
     def __init__(self, model, parent=None):
