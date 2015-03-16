@@ -4,14 +4,14 @@ from PyQt4.QtCore import Qt, QSettings, QByteArray
 from PyQt4.QtGui import QMainWindow, QTabWidget, QDockWidget, QToolBar, QAction, \
     QStyle, qApp, QApplication, QMessageBox
 
-from pulimonitor.network.requesthandler import RequestHandler
+from pulimonitor.network import requesthandler
 from pulimonitor.ui.about import dialog
 from pulimonitor.ui.job.panel import JobPanel
 from pulimonitor.ui.pool.panel import PoolPanel
-from pulimonitor.ui.rendernode.panel import RenderNodePanel
-from pulimonitor.ui.serverswitch import ServerSwitchDialog
 from pulimonitor.ui.rendernode.details import RenderNodeDetails
+from pulimonitor.ui.rendernode.panel import RenderNodePanel
 from pulimonitor.ui.rendernode.view import RenderNodeTableView
+from pulimonitor.ui.serverswitch import ServerSwitchDialog
 
 
 class MainWindow(QMainWindow):
@@ -19,6 +19,8 @@ class MainWindow(QMainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
         self.setWindowTitle('Puli Monitor')
+        self.requestHandler = requesthandler.get()
+
         # setup menus and toolbars
         self.initActions()
         self.initMenu()
@@ -30,7 +32,6 @@ class MainWindow(QMainWindow):
 #         self.addPoolsPanel()
 #         self.addJobPanel()
         self.restoreSettings()
-        self.requestHandler = RequestHandler()
         self.requestHandler.start()
 
     def initActions(self):
@@ -38,7 +39,7 @@ class MainWindow(QMainWindow):
         Create and setup actions valid in the main window
         '''
         self.refreshAction = QAction(qApp.style().standardIcon(QStyle.SP_BrowserReload), "Refresh", self)
-        self.refreshAction.triggered.connect(RequestHandler().requestAll)
+        self.refreshAction.triggered.connect(self.requestHandler.requestAll)
 
         self.switchServerAction = QAction("Switch Servers", self)
         self.switchServerAction.triggered.connect(self.onSwitchServer)

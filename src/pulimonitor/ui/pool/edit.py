@@ -7,7 +7,8 @@ Created on Feb 2, 2015
 from PyQt4.QtCore import Qt
 from PyQt4.QtGui import QDialog, QLineEdit, QVBoxLayout, QDialogButtonBox, \
     QFormLayout
-from pulimonitor.network.requesthandler import RequestHandler
+
+from pulimonitor.network import requesthandler
 
 
 class PoolEditDialog(QDialog):
@@ -28,7 +29,7 @@ class PoolEditDialog(QDialog):
     def accept(self, *args, **kwargs):
         name = self.nameLineEdit.text()
         if name:
-            rh = RequestHandler()
+            rh = requesthandler.get()
             rh.addPool(name)
         return QDialog.accept(self, *args, **kwargs)
 

@@ -11,7 +11,7 @@ from PyQt4.QtGui import QColor, QSortFilterProxyModel, qApp, QStyle
 from cached_property import cached_property
 
 from octopus.core.enums.rendernode import RN_STATUS_NAMES
-from pulimonitor.network.requesthandler import RequestHandler
+from pulimonitor.network import requesthandler
 from pulimonitor.ui.misc import dictToHtmlTable
 from pulimonitor.ui.treeitem import TreeItem
 from pulimonitor.ui.treemodel import TreeModel
@@ -173,7 +173,7 @@ class RenderNodeModel(TreeModel):
     def __init__(self, parent=None):
         super(RenderNodeModel, self).__init__(parent)
         self.setColumns(RN_COL_NAMES)
-        self.requestHandler = RequestHandler()
+        self.requestHandler = requesthandler.get()
         self.requestHandler.renderNodesUpdated.connect(self.onDataUpdate)
 
     def buildTree(self, updatedRendernodes, treeItemsById):

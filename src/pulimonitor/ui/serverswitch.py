@@ -8,7 +8,7 @@ from PyQt4.QtCore import Qt, pyqtSignal
 from PyQt4.QtGui import QDialog, QVBoxLayout, QDialogButtonBox, \
     QFormLayout
 
-from pulimonitor.network.requesthandler import RequestHandler
+from pulimonitor.network import requesthandler
 from pulimonitor.ui.combobox import ComboBox
 
 
@@ -32,7 +32,7 @@ class ServerSwitchDialog(QDialog):
         self.serverComboBox.currentItemChanged.connect(self.serverChanged.emit)
 
     def addServers(self):
-        rh = RequestHandler()
+        rh = requesthandler.get()
         m = self.serverComboBox.model()
         for i, server in enumerate(rh.servers):
             self.serverComboBox.addItem(server.host, server)

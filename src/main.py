@@ -13,8 +13,7 @@ setVersion(2)
 
 from PyQt4.QtGui import QApplication, QIcon, QMessageBox
 
-from pulimonitor.network.requesthandler import RequestHandler, \
-    startRequestThread
+from pulimonitor.network import requesthandler
 from pulimonitor.ui.about import APP_NAME
 from pulimonitor.ui.logindialog import LoginDialog
 from pulimonitor.ui.mainwindow import MainWindow
@@ -49,7 +48,7 @@ def main():
     app.setOrganizationDomain("opensource.mikrosimage.eu")
 
     # Test connectivity and dont start if server is not reachable
-    rh = RequestHandler()
+    rh = requesthandler.get()
     rh.loadServers()
     rh.challengeServers()
     rh.loadSettings()
@@ -59,7 +58,7 @@ def main():
                                             "defined in settings.ini "
                                             "failed! These server will be "
                                             "ignored" % ("\,".join([s.host for s in offline])))
-    startRequestThread()
+    requesthandler.startRequestThread()
 
     # prompt for login
     login = LoginDialog()

@@ -12,14 +12,6 @@ pulimonitor.network.requesthandler module
     :undoc-members:
     :show-inheritance:
 
-pulimonitor.network.utils module
---------------------------------
-
-.. automodule:: pulimonitor.network.utils
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 
 Module contents
 ---------------

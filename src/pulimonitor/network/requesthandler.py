@@ -1,3 +1,10 @@
+"""
+The RequestHandler is a singleton class, that lives in a separate QThread. It
+is responsible for pulling data from the server in intervals (specified in the
+configuration) as well as on demand. It is also used to communicate user actions
+to the server.
+"""
+
 import json
 import logging
 
@@ -12,28 +19,34 @@ from puliclient.server.server import Server
 from pulimonitor.util import config
 
 
-requestHandler = None
-requestThread = None
+def get(refresh=False):
+    '''
+    Create the RequestHandler and move it to its own QThread.
+    '''
+    if refresh:
+        get.requestHandler = None
+    if get.requestHandler:
+        return get.requestHandler
 
+    get.requestThread = QThread(qApp)
+    get.requestHandler = RequestHandler()
+    get.requestHandler.moveToThread(get.requestThread)
+    get.requestThread.started.connect(get.requestHandler.start)
+    get.requestThread.finished.connect(get.requestHandler.deleteLater)
+    return get.requestHandler
 
-def RequestHandler():
-    global requestHandler
-    global requestThread
-    if not requestHandler:
-        requestThread = QThread(qApp)
-        requestHandler = _RequestHandler()
-        requestHandler.moveToThread(requestThread)
-        requestThread.started.connect(requestHandler.start)
-        requestThread.finished.connect(requestHandler.deleteLater)
-    return requestHandler
+get.requestHandler = None
+get.requestThread = None
 
 
 def startRequestThread():
-    global requestThread
-    requestThread.start()
+    '''
+    Starts the request thread.
+    '''
+    get.requestThread.start()
 
 
-class _RequestHandler(QObject):
+class RequestHandler(QObject):
     '''
     A class handling the requests to the puli server. Results from the server
     are published via specific signals. For each type of request/listener
@@ -49,9 +62,9 @@ class _RequestHandler(QObject):
     jobsUpdated = pyqtSignal(list)
 
     def __init__(self, parent=None):
-        super(_RequestHandler, self).__init__(parent)
+        super(RequestHandler, self).__init__(parent)
         self.log = logging.getLogger(__name__)
-        self.config = config.get()
+        self.requestHandler = config.get()
         self.servers = []
         self.currentServer = None
         self.timer = QTimer(self)
@@ -62,8 +75,12 @@ class _RequestHandler(QObject):
         self.queueHandler = None
 
     def loadSettings(self):
+        '''
+        Loads the settings for the RequestHandler. This includes:
+           * The server used last
+        '''
         settings = QSettings()
-        settings.beginGroup("requesthandler")
+        settings.beginGroup("requestHandler")
         lastServer = int(settings.value("last_server", 0))
         try:
             self.currentServer = self.servers[lastServer]
@@ -73,13 +90,20 @@ class _RequestHandler(QObject):
         settings.endGroup()
 
     def onServerChanged(self, server):
+        '''
+        Slot called if the server is changed. Propagates this change to the
+        different handlers.
+        '''
         self.renderNodeHandler.setServer(server)
 #         self.poolHandler.setServer(server)
 #         self.queueHandler.setServer(server)
         self.log.info("Server set to: %s" % server)
 
     def loadServers(self):
-        for hostname, port in self.config.items("Servers"):
+        '''
+        Loads Server definitions from the configuration.
+        '''
+        for hostname, port in self.requestHandler.items("Servers"):
             server = Server(hostname, port)
             server.online = False
             self.servers.append(server)
@@ -87,6 +111,7 @@ class _RequestHandler(QObject):
     def challengeServers(self):
         '''
         This function tries to connect to the server configured in settings.ini
+
         :returns: list -- list of names of all offline servers
         '''
         for server in self.servers:
@@ -99,12 +124,16 @@ class _RequestHandler(QObject):
                 self.log.info("%s is offline" % server)
 
     def offlineServers(self):
+        '''
+        :returns: `Server` -- all offline :class:`Server` instances.
+        '''
+
         return [s for s in self.servers if not s.online]
 
     def start(self):
         self.log.debug("started")
         self.requestAll()
-        self.timer.start(self.config.getint("General", "refresh_interval") * 1000)
+        self.timer.start(self.requestHandler.getint("General", "refresh_interval") * 1000)
 
     def stop(self):
         self.log.debug("stopped")

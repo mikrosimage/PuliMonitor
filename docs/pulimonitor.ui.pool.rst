@@ -4,6 +4,14 @@ pulimonitor.ui.pool package
 Submodules
 ----------
 
+pulimonitor.ui.pool.edit module
+-------------------------------
+
+.. automodule:: pulimonitor.ui.pool.edit
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 pulimonitor.ui.pool.model module
 --------------------------------
 

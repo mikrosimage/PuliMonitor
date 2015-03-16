@@ -4,7 +4,7 @@ import subprocess
 from PyQt4.QtGui import QWidget, QVBoxLayout, QHBoxLayout, QMessageBox, qApp, \
     QErrorMessage
 
-from pulimonitor.network.requesthandler import RequestHandler
+from pulimonitor.network import requesthandler
 from pulimonitor.ui.action import Action
 from pulimonitor.ui.rendernode.stats import RenderNodeStatsWidget
 from pulimonitor.ui.rendernode.treemodel import RenderNodeModel, \
@@ -44,7 +44,7 @@ class RenderNodePanel(QWidget):
         Slot called once the pause action is triggered
         '''
         rendernodes = self.treeView.selectedRenderNodes()
-        rh = RequestHandler()
+        rh = requesthandler.get()
         erroneous = rh.setRenderNodesPaused(rendernodes, True, False)
         if erroneous:
             QErrorMessage(self).showMessage("Error unpausing: %s" % ("\n".join(erroneous)))
@@ -54,7 +54,7 @@ class RenderNodePanel(QWidget):
         Slot called once the pause action is triggered
         '''
         rendernodes = self.treeView.selectedRenderNodes()
-        rh = RequestHandler()
+        rh = requesthandler.get()
         erroneous = rh.setRenderNodesPaused(rendernodes, False, False)
         if erroneous:
             QErrorMessage(self).showMessage("Error unpausing: %s" % ("\n".join(erroneous)))

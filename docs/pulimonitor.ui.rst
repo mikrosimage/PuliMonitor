@@ -29,6 +29,22 @@ pulimonitor.ui.action module
     :undoc-members:
     :show-inheritance:
 
+pulimonitor.ui.checkboxdelegate module
+--------------------------------------
+
+.. automodule:: pulimonitor.ui.checkboxdelegate
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pulimonitor.ui.combobox module
+------------------------------
+
+.. automodule:: pulimonitor.ui.combobox
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 pulimonitor.ui.headerview module
 --------------------------------
 
@@ -85,6 +101,14 @@ pulimonitor.ui.searchlineedit module
     :undoc-members:
     :show-inheritance:
 
+pulimonitor.ui.serverswitch module
+----------------------------------
+
+.. automodule:: pulimonitor.ui.serverswitch
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 pulimonitor.ui.sipapi module
 ----------------------------
 
@@ -121,6 +145,14 @@ pulimonitor.ui.treemodel module
 -------------------------------
 
 .. automodule:: pulimonitor.ui.treemodel
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pulimonitor.ui.treeview module
+------------------------------
+
+.. automodule:: pulimonitor.ui.treeview
     :members:
     :undoc-members:
     :show-inheritance:
