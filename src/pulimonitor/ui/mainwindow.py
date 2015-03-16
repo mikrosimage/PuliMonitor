@@ -10,7 +10,7 @@ from pulimonitor.ui.job.panel import JobPanel
 from pulimonitor.ui.pool.panel import PoolPanel
 from pulimonitor.ui.rendernode.details import RenderNodeDetails
 from pulimonitor.ui.rendernode.panel import RenderNodePanel
-from pulimonitor.ui.rendernode.view import RenderNodeTableView
+from pulimonitor.ui.rendernode.treeview import RenderNodeTreeView
 from pulimonitor.ui.serverswitch import ServerSwitchDialog
 
 
@@ -99,7 +99,7 @@ class MainWindow(QMainWindow):
 
     def addRenderNodeDetailsPanel(self):
         focusWidget = QApplication.focusWidget()
-        if isinstance(focusWidget, RenderNodeTableView):
+        if isinstance(focusWidget, RenderNodeTreeView):
             rnDetails = RenderNodeDetails(self)
             focusWidget.selectedRendernodesChanged.connect(rnDetails.onRendernodeChanged)
             self.addDockWidget(Qt.BottomDockWidgetArea, rnDetails)
