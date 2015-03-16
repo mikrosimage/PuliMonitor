@@ -75,6 +75,9 @@ class RenderNodeTreeView(TreeView):
         self.setItemDelegateForColumn(RN_COL_DATA.index("systemSwapPercentage"), RenderNodeProgressBarDelegate(self))
         self.setItemDelegateForColumn(RN_COL_DATA.index("excluded"), RenderNodeCheckBoxDelegate(self))
 
+    def selectedRenderNodes(self):
+        return [index.data(Qt.UserRole)._data for index in self.selectionModel().selectedRows()]
+
     def onLayoutChanged(self):
         for row in range(self.model().rowCount()):
             self.setFirstColumnSpanned(row, QModelIndex(), True)

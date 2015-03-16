@@ -1,3 +1,4 @@
+import json
 import logging
 
 from PyQt4.QtCore import QObject, pyqtSignal, QTimer, QThread, QSettings
@@ -111,6 +112,21 @@ class _RequestHandler(QObject):
         t = self.thread()
         t.quit()
         t.wait()
+
+    def setRenderNodesPaused(self, rendernodes, paused, kill):
+        if self.currentServer:
+            erroneous = []
+            for rn in rendernodes:
+                r = self.currentServer.put("rendernodes/{name}/paused/".format(name=rn.name),
+                                           data=json.dumps({"paused": paused, "killproc": kill}))
+                if r == "":
+                    self.log.info("(un)paused " + rn.name)
+                else:
+                    self.log.error("error (un)pausing " + rn.name)
+                    erroneous.append(rn.name)
+            return erroneous
+        else:
+            return False
 
     def queryAllRenderNodes(self):
         '''

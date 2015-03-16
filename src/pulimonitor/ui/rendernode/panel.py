@@ -1,10 +1,8 @@
-import json
 import logging
 import subprocess
 
-from PyQt4.QtCore import Qt
-from PyQt4.QtGui import QWidget, QVBoxLayout, QHBoxLayout, QMessageBox, qApp
-import requests
+from PyQt4.QtGui import QWidget, QVBoxLayout, QHBoxLayout, QMessageBox, qApp, \
+    QErrorMessage
 
 from pulimonitor.network.requesthandler import RequestHandler
 from pulimonitor.ui.action import Action
@@ -45,36 +43,33 @@ class RenderNodePanel(QWidget):
         '''
         Slot called once the pause action is triggered
         '''
+        rendernodes = self.treeView.selectedRenderNodes()
         rh = RequestHandler()
-        for index in self.treeView.selectionModel().selectedRows():
-            rn = index.data(Qt.UserRole)
-            self.log.info("pausing " + rn.name)
-            requests.put(rh.baseUrl + "/rendernodes/{name}/paused/".format(name=rn.name),
-                         data=json.dumps({"paused": True, "killproc": False}))
+        erroneous = rh.setRenderNodesPaused(rendernodes, True, False)
+        if erroneous:
+            QErrorMessage(self).showMessage("Error unpausing: %s" % ("\n".join(erroneous)))
 
     def onUnpauseAction(self):
         '''
         Slot called once the pause action is triggered
         '''
+        rendernodes = self.treeView.selectedRenderNodes()
         rh = RequestHandler()
-        for index in self.treeView.selectionModel().selectedRows():
-            rn = index.data(Qt.UserRole)
-            self.log.info("unpausing " + rn.name)
-            requests.put(rh.baseUrl + "/rendernodes/{name}/paused/".format(name=rn.name),
-                         data=json.dumps({"paused": False, "killproc": False}))
+        erroneous = rh.setRenderNodesPaused(rendernodes, False, False)
+        if erroneous:
+            QErrorMessage(self).showMessage("Error unpausing: %s" % ("\n".join(erroneous)))
 
-    def onXTermAction(self):
+    def onTerminalOpenAction(self):
         '''
-        Slot called once the XTerm action is triggered.
+        Slot called on the "Open Terminal" action is triggered.
         '''
         cmdTemplate = config.get().get("SSH-Terminal", "ssh_command")
-        for index in self.treeView.selectionModel().selectedRows():
-            rn = index.data(Qt.UserRole)
+        for rn in self.treeView.selectedRenderNodes():
             cu = currentUser().name
-            sshCommand = cmdTemplate.format(cu, rn.host)
+            sshCommand = cmdTemplate.format(user=cu, host=rn.host)
             try:
                 self.log.debug("opening terminal with command: " + sshCommand)
-                subprocess.Popen(sshCommand)
+                subprocess.Popen(sshCommand, shell=True)
             except:
                 msg = "Could not open terminal."
                 self.log.exception(msg)
@@ -85,8 +80,7 @@ class RenderNodePanel(QWidget):
         Slot called once the Show VNC action is triggered.
         '''
         cmdTemplate = config.get().get("VNC", "vnc_command")
-        for index in self.treeView.selectionModel().selectedRows():
-            rn = index.data(Qt.UserRole)
+        for rn in self.treeView.selectedRenderNodes():
             vncCommand = cmdTemplate.format(hostname=rn.host)
             self.log.debug("opening vnc with command: {0}".format(vncCommand))
             try:
@@ -124,8 +118,8 @@ class RenderNodePanel(QWidget):
 #         a.triggered.connect(self.onPauseAction)
         a = self.__addAction("Show Log", 8, True)
 #         a.triggered.connect(self.onPauseAction)
-        a = self.__addAction("Open XTerm", 9, True)
-        a.triggered.connect(self.onXTermAction)
+        a = self.__addAction("Open Terminal", 9, True)
+        a.triggered.connect(self.onTerminalOpenAction)
         a = self.__addAction("Open VNC", 10, True)
         a.triggered.connect(self.onVncAction)
         a = self.__addAction("Remove Pools", 11, True)
